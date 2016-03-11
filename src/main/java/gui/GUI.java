@@ -1,3 +1,5 @@
+package gui;
+
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 
