@@ -1,11 +1,7 @@
 package gui;
 
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,14 +14,14 @@ public class GUI {
 	private JPanel teamMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel fullMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel basicStatPanel = new JPanel(new GridLayout(3, 3));
-
-	private ImageIcon pitDataIcon = getScaledIcon("FIRST Logo.gif");
-	private ImageIcon teamMatchDataIcon = getScaledIcon("Boulder.png");
-	private ImageIcon fullMatchDataIcon = getScaledIcon("portcullis.png");
-	private ImageIcon basicStatPanelIcon = getScaledIcon("stronghold.png");
+	private ImageIcon pitDataIcon = new ImageIcon("FIRST Logo.gif");
+	private ImageIcon teamMatchDataIcon = new ImageIcon("Boulder.png");
+	private ImageIcon fullMatchDataIcon = new ImageIcon("portcullis.png");
+	private ImageIcon basicStatPanelIcon = new ImageIcon("stronghold.png");
 
 	public GUI() {
 
+		// Tab setup
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
 		tabs.addTab("Team Match Data", teamMatchDataIcon, teamMatchData, "Enter individual team match data here.");
@@ -36,19 +32,11 @@ public class GUI {
 				"See data about an individual team here.");
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
+		// frame setup
 		mainFrame.add(tabs);
 		mainFrame.setSize(1000, 500);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
-
-	}
-
-	public ImageIcon getScaledIcon(String filename) {
-		BufferedImage buff = new BufferedImage(new ImageIcon(filename).getImage().getWidth(null),
-				new ImageIcon(filename).getImage().getHeight(null), BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics g = buff.createGraphics();
-		g.drawImage(new ImageIcon(filename).getImage(), 0, 0, 20, 20, null);
-		return new ImageIcon(buff);
 
 	}
 
