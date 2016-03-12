@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -37,6 +39,48 @@ public class GUI {
 		mainFrame.setSize(1000, 500);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
+
+		class KeyboardListen implements KeyListener {
+
+			boolean ctrl = false;
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_CONTROL)
+					ctrl = true;
+				if (e.getKeyCode() == KeyEvent.VK_1) {
+					if (ctrl)
+						tabs.setSelectedIndex(0);
+				}
+				if (e.getKeyCode() == KeyEvent.VK_2) {
+					if (ctrl)
+						tabs.setSelectedIndex(1);
+				}
+				if (e.getKeyCode() == KeyEvent.VK_3) {
+					if (ctrl)
+						tabs.setSelectedIndex(2);
+				}
+				if (e.getKeyCode() == KeyEvent.VK_4) {
+					if (ctrl)
+						tabs.setSelectedIndex(3);
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_CONTROL)
+					ctrl = false;
+			}
+
+		}
+		tabs.addKeyListener(new KeyboardListen());
 
 	}
 
