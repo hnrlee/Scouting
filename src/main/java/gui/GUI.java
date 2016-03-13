@@ -5,21 +5,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 public class GUI {
 	private JFrame mainFrame = new JFrame("The Dankest Scouting App");
 	private JTabbedPane tabs = new JTabbedPane();
-	private JPanel pitData = new JPanel(new GridLayout(3, 3));
+	private JPanel pitData = new JPanel(new GridLayout(2, 2));
 	private JPanel teamMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel fullMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel basicStatPanel = new JPanel(new GridLayout(3, 3));
-	private ImageIcon pitDataIcon = new ImageIcon("FIRST Logo.gif");
-	private ImageIcon teamMatchDataIcon = new ImageIcon("Boulder.png");
-	private ImageIcon fullMatchDataIcon = new ImageIcon("portcullis.png");
-	private ImageIcon basicStatPanelIcon = new ImageIcon("stronghold.png");
+	private ImageIcon pitDataIcon = new ImageIcon("Icons/FIRST Logo.gif");
+	private ImageIcon teamMatchDataIcon = new ImageIcon("Icons/Boulder.png");
+	private ImageIcon fullMatchDataIcon = new ImageIcon("Icons/portcullis.png");
+	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
 
 	public GUI() {
 
@@ -33,6 +35,8 @@ public class GUI {
 		tabs.addTab("Individual Team Statistics", basicStatPanelIcon, basicStatPanel,
 				"See data about an individual team here.");
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
+
+		setupPitData();
 
 		// frame setup
 		mainFrame.add(tabs);
@@ -85,7 +89,87 @@ public class GUI {
 	}
 
 	public void setupPitData() {
+		// top left, defenses (auto and tele)
+		// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
+		int numberOfDefenses = 9;
+		JPanel tl = new JPanel(new GridLayout(numberOfDefenses + 1, 2));
+		JCheckBoxMenuItem[] autoChecks = new JCheckBoxMenuItem[numberOfDefenses];
+		JCheckBoxMenuItem[] teleChecks = new JCheckBoxMenuItem[numberOfDefenses];
+		tl.add(new JLabel("Autonomous"));
+		tl.add(new JLabel("Teleoperated"));
+		for (int i = 0; i < autoChecks.length; i++) {
+			switch (i) {
+			case 0:
+				autoChecks[i] = new JCheckBoxMenuItem("Portcullis", new ImageIcon("Icons/portcullis.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Portcullis", new ImageIcon("Icons/portcullis.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 1:
+				autoChecks[i] = new JCheckBoxMenuItem("Cheval De Fris", new ImageIcon("Icons/cdf.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Cheval De Fris", new ImageIcon("Icons/cdf.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 2:
+				autoChecks[i] = new JCheckBoxMenuItem("Moat", new ImageIcon("Icons/moat.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Moat", new ImageIcon("Icons/moat.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 3:
+				autoChecks[i] = new JCheckBoxMenuItem("Ramparts", new ImageIcon("Icons/ramparts.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Ramparts", new ImageIcon("Icons/ramparts.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 4:
+				autoChecks[i] = new JCheckBoxMenuItem("Drawbridge", new ImageIcon("Icons/drawbridge.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Drawbridge", new ImageIcon("Icons/drawbridge.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 5:
+				autoChecks[i] = new JCheckBoxMenuItem("Sally Port", new ImageIcon("Icons/sallyport.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Sally Port", new ImageIcon("Icons/sallyport.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 6:
+				autoChecks[i] = new JCheckBoxMenuItem("Rock Wall", new ImageIcon("Icons/rockwall.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Rock Wall", new ImageIcon("Icons/rockwall.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 7:
+				autoChecks[i] = new JCheckBoxMenuItem("Rough Terrain", new ImageIcon("Icons/roughterrain.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Rough Terrain", new ImageIcon("Icons/roughterrain.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			case 8:
+				autoChecks[i] = new JCheckBoxMenuItem("Low Bar", new ImageIcon("Icons/lowbar.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Low Bar", new ImageIcon("Icons/lowbar.png"));
+				tl.add(autoChecks[i]);
+				tl.add(teleChecks[i]);
+				break;
+			}
+		}
 
+		// top right, basic robot functions, autonomous functions,
+		// make sure to include 1 ball auto AND 2 ball auto
+		JPanel tr = new JPanel(new GridLayout());
+
+		// bottom left, data input, speed, tean number, name, etc
+		JPanel bl = new JPanel(new GridLayout());
+
+		// bottom right, notes and whatever else i can think of
+		JPanel br = new JPanel(new GridLayout());
+
+		pitData.add(tl);
+		pitData.add(tr);
+		pitData.add(bl);
+		pitData.add(br);
 	}
 
 }
