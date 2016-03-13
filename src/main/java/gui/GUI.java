@@ -54,19 +54,19 @@ public class GUI {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_CONTROL)
 					ctrl = true;
-				if (e.getKeyCode() == KeyEvent.VK_1) {
+				if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
 					if (ctrl)
 						tabs.setSelectedIndex(0);
 				}
-				if (e.getKeyCode() == KeyEvent.VK_2) {
+				if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
 					if (ctrl)
 						tabs.setSelectedIndex(1);
 				}
-				if (e.getKeyCode() == KeyEvent.VK_3) {
+				if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
 					if (ctrl)
 						tabs.setSelectedIndex(2);
 				}
-				if (e.getKeyCode() == KeyEvent.VK_4) {
+				if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
 					if (ctrl)
 						tabs.setSelectedIndex(3);
 				}
