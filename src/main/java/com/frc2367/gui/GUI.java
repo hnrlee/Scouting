@@ -1,4 +1,4 @@
-package gui;
+package com.frc2367.gui;
 
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;

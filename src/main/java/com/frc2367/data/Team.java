@@ -1,4 +1,4 @@
-package team;
+package com.frc2367.data;
 
 public class Team {
 
