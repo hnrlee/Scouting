@@ -106,8 +106,8 @@ public class GUI {
 				tl.add(teleChecks[i]);
 				break;
 			case 1:
-				autoChecks[i] = new JCheckBoxMenuItem("Cheval De Fris", new ImageIcon("Icons/cdf.png"));
-				teleChecks[i] = new JCheckBoxMenuItem("Cheval De Fris", new ImageIcon("Icons/cdf.png"));
+				autoChecks[i] = new JCheckBoxMenuItem("Cheval De Frise", new ImageIcon("Icons/cdf.png"));
+				teleChecks[i] = new JCheckBoxMenuItem("Cheval De Frise", new ImageIcon("Icons/cdf.png"));
 				tl.add(autoChecks[i]);
 				tl.add(teleChecks[i]);
 				break;
