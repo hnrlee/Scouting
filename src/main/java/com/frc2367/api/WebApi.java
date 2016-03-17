@@ -2,6 +2,7 @@ package com.frc2367.api;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import javax.ws.rs.GET;
@@ -18,38 +19,66 @@ import javax.ws.rs.core.Response;
 @Path("myresource")
 public class WebApi {
 	private String apiKey;
-	
-	public WebApi()
-	{
-		Scanner scan=null;
-		try
-		{
+	private String competition;
+
+	public WebApi(String competition) {
+		Scanner scan = null;
+		try {
 			scan = new Scanner(new File("apiKey.txt"));
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			System.out.println("error reading key");
 		}
 		apiKey = scan.nextLine();
 		System.out.println(apiKey);
+		this.competition = competition;
 	}
-    /**
-     * Method handling HTTP GET requests. The returned object will be sent
-     * to the client as "text/plain" media type.
-     *
-     * @return String that will be returned as a text/plain response.
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public void getTeams(String competition) 
-    {
-    	Client client = ClientBuilder.newClient();
-    	Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/events")
-    			  .request(MediaType.TEXT_PLAIN_TYPE)
-    			  .header("Authorization", apiKey)
-    			  .get();
-    	System.out.println("status: " + response.getStatus()); 
-    	System.out.println("headers: " + response.getHeaders());
-    	System.out.println("body:" + response.readEntity(String.class));
-    }
+
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+
+	public void getEvents() {
+		File f = new File("");
+		if(f.exists() && !f.isDirectory()) { 
+		    // do something
+		}
+		Client client = ClientBuilder.newClient();
+		Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/events")
+				.request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
+		System.out.println("status: " + response.getStatus());
+		System.out.println("headers: " + response.getHeaders());
+		String body = response.readEntity(String.class);
+		try {
+			PrintWriter out = new PrintWriter("Cache/events.txt");
+			out.println(body);
+		} catch (FileNotFoundException e) {
+		}
+	}
+
+	public void getTeams() {
+		Client client = ClientBuilder.newClient();
+		Response response = client.target("http://thebluealliance.com/api/v2/event/" + competition + "/teams")
+				.request(MediaType.TEXT_PLAIN_TYPE).header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").get();
+
+		System.out.println("status: " + response.getStatus());
+		String body = response.readEntity(String.class);
+		try {
+			PrintWriter out = new PrintWriter("Cache/" + competition + "-teams.txt");
+			out.println(body);
+		} catch (FileNotFoundException e) {
+		}
+	}
+
+	public void getMatchDetails(String event, int teamNumber, String level) {
+		Client client = ClientBuilder.newClient();
+		Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/scores/"+event+"/"+ level +"?teamNumber=" + teamNumber)
+				.request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
+		System.out.println("status: " + response.getStatus());
+		System.out.println("headers: " + response.getHeaders());
+		String body = response.readEntity(String.class);
+		try {
+			PrintWriter out = new PrintWriter("Cache/" + competition+ ":"+ teamNumber + ":" + level + ".txt");
+			out.println(body);
+		} catch (FileNotFoundException e) {
+		}
+	}
 }
