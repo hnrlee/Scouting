@@ -16,8 +16,13 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.frc2367.data.ScoutedTeam;
+import com.frc2367.data.events.Event;
 import com.frc2367.data.events.Events;
 import com.frc2367.data.ranks.Ranks;
+import com.frc2367.data.schedule.EventSchedule;
+import com.frc2367.data.schedule.Team;
+import com.frc2367.data.scores.MatchScore;
 import com.frc2367.data.scores.Scores;
 import com.frc2367.data.teams.EventTeams;
 import com.frc2367.data.teams.TeamInfo;
@@ -33,7 +38,11 @@ public class WebApi
 	private String apiKey;
 	private String competition;
 
-	public WebApi(String competition)
+	private EventTeams eventTeams;
+	private boolean forceNoUpdate;
+	private ArrayList<ScoutedTeam> scoutedTeams;
+	
+	public WebApi(String competition, boolean forceNoUpdate,ArrayList<ScoutedTeam> scoutedTeams)
 	{
 		Scanner scan = null;
 		try
@@ -47,6 +56,85 @@ public class WebApi
 		apiKey = scan.nextLine();
 		System.out.println(apiKey);
 		this.competition = competition;
+		this.forceNoUpdate = forceNoUpdate;
+		this.scoutedTeams = scoutedTeams;
+	}
+
+	public void updateData()
+	{
+
+		eventTeams = this.getTeams();
+		for (TeamInfo team : eventTeams.getTeams())
+		{
+			Events teamEvents = this.getEvents(team.getTeamNumber());
+			System.out.println(teamEvents.getEvents().size());
+			//TODO: MAKE this work
+			for (Event event : teamEvents.getEvents())
+			{
+				EventSchedule eventSchedule = this.getSchedule(event.getCode(), team.getTeamNumber());
+				Scores scoresQual = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "qual");
+				Scores scoresPlayoff = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "playoff");
+				MatchScore score;
+				int scheduleIndex=0;
+				for(int i = 0;i<scoresQual.getMatchScores().size();i++)
+				{
+					scheduleIndex = i;
+					score = scoresQual.getMatchScores().get(i);
+					if(score.getMatchNumber()==eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
+					{
+						if(eventSchedule.getSchedule().get(scheduleIndex).getDescription().toLowerCase().contains(score.getMatchLevel()))
+						{
+							for(Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
+							{
+								if(scheduleTeam.getNumber()==team.getTeamNumber())
+								{
+									if(scheduleTeam.getStation().toLowerCase().contains("blue"))
+									{
+//										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
+//										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(0));
+									}
+									else if(scheduleTeam.getStation().toLowerCase().contains("red"))
+									{
+//										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
+//										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(1));
+									}
+								}
+							}
+						}
+					}
+					
+				}
+				for (int i = 0; i < scoresPlayoff.getMatchScores().size(); i++)
+				{
+					scheduleIndex+=1;
+					score = scoresPlayoff.getMatchScores().get(i);
+					if(score.getMatchNumber()==eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
+					{
+						if(eventSchedule.getSchedule().get(scheduleIndex).getDescription().toLowerCase().contains(score.getMatchLevel()))
+						{
+							for(Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
+							{
+								if(scheduleTeam.getNumber()==team.getTeamNumber())
+								{
+									if(scheduleTeam.getStation().toLowerCase().contains("blue"))
+									{
+										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
+										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(0));
+									}
+									else if(scheduleTeam.getStation().toLowerCase().contains("red"))
+									{
+										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
+										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(1));
+									}
+								}
+							}
+						}
+					}
+					
+				}
+			}
+		}
+		System.out.println("Done updating");
 	}
 
 	public Events getEvents()// gets all the events
@@ -63,13 +151,12 @@ public class WebApi
 
 	}
 
-	public EventTeams getTeams()// gets all the teams at the event
+	public EventTeams getTeams()// gets all the teams at the main event
 	{
 		String json = this.makeRequest("http://thebluealliance.com/api/v2/event/2016" + competition + "/teams", competition + "-teams", false);
 
 		Type fooType = new TypeToken<ArrayList<TeamInfo>>()
-		{
-		}.getType();
+		{}.getType();
 		ArrayList<TeamInfo> array = new Gson().fromJson(json, fooType);
 		EventTeams teams = new EventTeams();
 		teams.setTeams(array);
@@ -78,41 +165,41 @@ public class WebApi
 
 	public Scores getMatchDetails(String event, int teamNumber, String level)// gets info about match of team
 	{
-		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" + teamNumber, competition + "-" + teamNumber + "-" + level, true);
+		event = event.toLowerCase();
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" + teamNumber, event + "-" + teamNumber + "-" + level, true);
 		return new Gson().fromJson(json, Scores.class);
 	}
 
 	public Ranks getRanks(String event)// gets rankings of events
 	{
+		event = event.toLowerCase();
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/rankings/" + event, event + "-ranks", true);
 		return new Gson().fromJson(json, Ranks.class);
 	}
 
-	public void updateData()
+	public EventSchedule getSchedule(String event, int teamNumber)
 	{
-		this.getEvents();
+		event = event.toLowerCase();
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/schedule/" + event + "?teamNumber=" + teamNumber, "schedule-" + event + "-" + teamNumber, true);
+		return new Gson().fromJson(json, EventSchedule.class);
 	}
 
-	public String makeRequest(String request, String fileName, boolean auth)
+	public String makeRequest(String request, String fileName, boolean auth)// handles all the logic for requests
 	{
 		File f = new File("Cache/" + fileName + ".txt");
 		Client client = ClientBuilder.newClient();
 		Response response = null;
 		String body = null;
-		if (!f.exists() && !f.isDirectory())
+		if (!forceNoUpdate && !f.exists() && !f.isDirectory())
 		{
 			System.out.println("No files, grabing new response");
 			if (auth)
-				response = client.target(request)
-				.request(MediaType.TEXT_PLAIN_TYPE)
-				.header("Authorization", apiKey).get();
+				response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
 			else
-				response = client.target(request)
-				.request(MediaType.TEXT_PLAIN_TYPE)
-				.header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").get();
+				response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").get();
 
 		}
-		else
+		else if (!forceNoUpdate)
 		{
 			try
 			{
@@ -121,24 +208,18 @@ public class WebApi
 				scan.close();
 				modDate.replaceAll("[^A-Za-z0-9()\\[\\]]", "");
 				if (auth)
-					response = client.target(request)
-					.request(MediaType.TEXT_PLAIN_TYPE)
-					.header("Authorization", apiKey)
-					.header("If-Modified-Since", modDate).get();
+					response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).header("If-Modified-Since", modDate).get();
 				else
-					response = client.target(request)
-					.request(MediaType.TEXT_PLAIN_TYPE)
-					.header("X-TBA-App-Id", "frc2367:team-analysis:v0.1")
-					.header("If-Modified-Since", modDate).get();
+					response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").header("If-Modified-Since", modDate).get();
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		body = response.readEntity(String.class);
-		if (response.getStatus() == 200)// successful
+		if (!forceNoUpdate && response.getStatus() == 200)// successful
 		{
+			body = response.readEntity(String.class);
 			System.out.println("Got new data");
 			String lastMod = response.getHeaderString("Last-Modified");
 			try
@@ -156,7 +237,7 @@ public class WebApi
 				System.out.println("Error writing to file");
 			}
 		}
-		else if (response.getStatus() == 304)// no new data
+		else if (forceNoUpdate || response.getStatus() == 304)// no new data
 		{
 			System.out.println("No new data, using old data");
 			try

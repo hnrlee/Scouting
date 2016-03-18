@@ -6,33 +6,33 @@ public class Ranking
 	{
 		
 	}
-	public int dq;
+	private int dq;
 
-	public int losses;
+	private int losses;
 
-	public int matchesPlayed;
+	private int matchesPlayed;
 
-	public double qualAverage;
+	private double qualAverage;
 
-	public int rank;
+	private int rank;
 
-	public int teamNumber;
+	private int teamNumber;
 
-	public int ties;
+	private int ties;
 
-	public int wins;
+	private int wins;
 
-	public int sortOrder1;
+	private int sortOrder1;
 
-	public int sortOrder2;
+	private int sortOrder2;
 
-	public int sortOrder3;
+	private int sortOrder3;
 
-	public int sortOrder4;
+	private int sortOrder4;
 
-	public int sortOrder5;
+	private int sortOrder5;
 
-	public int sortOrder6;
+	private int sortOrder6;
 
 	public int getDq()
 	{

@@ -2,14 +2,21 @@ package com.frc2367.data.scores;
 
 import java.util.ArrayList;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class MatchScore
 {
 
 	private String matchLevel;
 	private int matchNumber;
-	private String AudienceGroup;
-	private ArrayList<Alliance> Alliances = new ArrayList<Alliance>();
+	@SerializedName("AudienceGroup")
+	@Expose
+	private String audienceGroup;
+	@SerializedName("Alliances")
+	@Expose
+	private ArrayList<Alliance> alliances = new ArrayList<Alliance>();
 	
 	public MatchScore()
 	{
@@ -28,12 +35,12 @@ public class MatchScore
 
 	public String getAudienceGroup()
 	{
-		return AudienceGroup;
+		return audienceGroup;
 	}
 
 	public ArrayList<Alliance> getAlliances()
 	{
-		return Alliances;
+		return alliances;
 	}
 		
 

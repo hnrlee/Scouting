@@ -2,9 +2,14 @@ package com.frc2367.data.ranks;
 
 import java.util.ArrayList;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Ranks
 {
-	public ArrayList<Ranking> Rankings = new ArrayList<Ranking>();
+	@SerializedName("Rankings")
+	@Expose
+	private ArrayList<Ranking> Rankings = new ArrayList<Ranking>();
 	public Ranks()
 	{
 		

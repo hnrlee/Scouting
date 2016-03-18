@@ -1,10 +1,14 @@
 package com.frc2367.data;
 
+import java.util.ArrayList;
+
+import com.frc2367.data.scores.Alliance;
+
 public class ScoutedTeam {
 
 	// Defense Booleans
 	// Underscore denotes autonomous ability
-
+	private ArrayList<Alliance> allMatches = new ArrayList<Alliance>();
 	// Cat A
 	private boolean port, cdf, port_, cdf_;
 	// Cat B
@@ -28,7 +32,12 @@ public class ScoutedTeam {
 	/*
 	 * TODO: Add match data, not just pit data
 	 */
-
+	public ScoutedTeam(String name, int num)
+	{
+		this.name = name;
+		this.teamNum = num;
+	}
+	
 	private void autoCapability(boolean p, boolean c, boolean m, boolean r, boolean d, boolean s, boolean w, boolean t,
 			boolean l) {
 		setPort_(p);
@@ -285,6 +294,16 @@ public class ScoutedTeam {
 
 	public void setTeamNum(int teamNum) {
 		this.teamNum = teamNum;
+	}
+
+	public ArrayList<Alliance> getAllMatches()
+	{
+		return allMatches;
+	}
+
+	public void setAllMatches(ArrayList<Alliance> allMatches)
+	{
+		this.allMatches = allMatches;
 	}
 
 }
