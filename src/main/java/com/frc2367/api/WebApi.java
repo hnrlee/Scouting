@@ -2,19 +2,27 @@ package com.frc2367.api;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.frc2367.data.events.Events;
+import com.frc2367.data.ranks.Ranks;
 import com.frc2367.data.scores.Scores;
+import com.frc2367.data.teams.EventTeams;
+import com.frc2367.data.teams.TeamInfo;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -41,114 +49,125 @@ public class WebApi
 		this.competition = competition;
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-
-	public void getEvents()
+	public Events getEvents()// gets all the events
 	{
-		File f = new File("Cache/events.txt");
-		if (!f.exists() && !f.isDirectory())
-		{
-			Client client = ClientBuilder.newClient();
-			Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/events").request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
-			System.out.println("status: " + response.getStatus());
-			System.out.println("headers: " + response.getHeaders());
-			String body = response.readEntity(String.class);
-			try
-			{
-				PrintWriter out = new PrintWriter("Cache/events.txt");
-				out.println(body);
-				out.close();
-			}
-			catch (FileNotFoundException e)
-			{
-				System.out.println("Error writing to file");
-			}
-		}
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/events", "events", true);
+		return new Gson().fromJson(json, Events.class);
 
 	}
 
-	public void getTeams()
+	public Events getEvents(int teamNumber)// gets all the events
 	{
-		File f = new File("Cache/" + competition + "-teams.txt");
-		if (!f.exists() && !f.isDirectory())
-		{
-			Client client = ClientBuilder.newClient();
-			Response response = client.target("http://thebluealliance.com/api/v2/event/" + competition + "/teams").request(MediaType.TEXT_PLAIN_TYPE).header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").get();
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/events?teamNumber=" + teamNumber, "events-" + teamNumber, true);
+		return new Gson().fromJson(json, Events.class);
 
-			System.out.println("status: " + response.getStatus());
-			String body = response.readEntity(String.class);
-			try
-			{
-				PrintWriter out = new PrintWriter("Cache/" + competition + "-teams.txt");
-				out.println(body);
-				out.close();
-			}
-			catch (FileNotFoundException e)
-			{
-				System.out.println("Error writing to file");
-			}
-			Gson gson = new Gson();
-			
-		}
 	}
 
-	public void getMatchDetails(String event, int teamNumber, String level)
+	public EventTeams getTeams()// gets all the teams at the event
 	{
-		File f = new File("Cache/" + competition + "-" + teamNumber + "-" + level + ".txt");
+		String json = this.makeRequest("http://thebluealliance.com/api/v2/event/2016" + competition + "/teams", competition + "-teams", false);
+
+		Type fooType = new TypeToken<ArrayList<TeamInfo>>()
+		{
+		}.getType();
+		ArrayList<TeamInfo> array = new Gson().fromJson(json, fooType);
+		EventTeams teams = new EventTeams();
+		teams.setTeams(array);
+		return teams;
+	}
+
+	public Scores getMatchDetails(String event, int teamNumber, String level)// gets info about match of team
+	{
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" + teamNumber, competition + "-" + teamNumber + "-" + level, true);
+		return new Gson().fromJson(json, Scores.class);
+	}
+
+	public Ranks getRanks(String event)// gets rankings of events
+	{
+		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/rankings/" + event, event + "-ranks", true);
+		return new Gson().fromJson(json, Ranks.class);
+	}
+
+	public void updateData()
+	{
+		this.getEvents();
+	}
+
+	public String makeRequest(String request, String fileName, boolean auth)
+	{
+		File f = new File("Cache/" + fileName + ".txt");
+		Client client = ClientBuilder.newClient();
+		Response response = null;
+		String body = null;
 		if (!f.exists() && !f.isDirectory())
 		{
-			
-			Client client = ClientBuilder.newClient();
-			// Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" +
-			// teamNumber).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
-			Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?matchNumber=1").request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
-			System.out.println("status: " + response.getStatus());
-			System.out.println("headers: " + response.getHeaders());
-			String body = response.readEntity(String.class);
+			System.out.println("No files, grabing new response");
+			if (auth)
+				response = client.target(request)
+				.request(MediaType.TEXT_PLAIN_TYPE)
+				.header("Authorization", apiKey).get();
+			else
+				response = client.target(request)
+				.request(MediaType.TEXT_PLAIN_TYPE)
+				.header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").get();
+
+		}
+		else
+		{
 			try
 			{
-				PrintWriter out = new PrintWriter("Cache/" + competition + "-" + teamNumber + "-" + level + ".txt");
-				out.println(body);
-				out.close();
+				Scanner scan = new Scanner(new File("Cache/" + fileName + "-mod.txt"));
+				String modDate = scan.nextLine();
+				scan.close();
+				modDate.replaceAll("[^A-Za-z0-9()\\[\\]]", "");
+				if (auth)
+					response = client.target(request)
+					.request(MediaType.TEXT_PLAIN_TYPE)
+					.header("Authorization", apiKey)
+					.header("If-Modified-Since", modDate).get();
+				else
+					response = client.target(request)
+					.request(MediaType.TEXT_PLAIN_TYPE)
+					.header("X-TBA-App-Id", "frc2367:team-analysis:v0.1")
+					.header("If-Modified-Since", modDate).get();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		body = response.readEntity(String.class);
+		if (response.getStatus() == 200)// successful
+		{
+			System.out.println("Got new data");
+			String lastMod = response.getHeaderString("Last-Modified");
+			try
+			{
+				PrintWriter outBody = new PrintWriter("Cache/" + fileName + ".txt");
+				outBody.println(body);
+				outBody.close();
+				PrintWriter outMod = new PrintWriter("Cache/" + fileName + "-mod.txt");
+				outMod.println(lastMod);
+				outMod.close();
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
 				System.out.println("Error writing to file");
 			}
-			Gson gson = new Gson();
-			Scores scores = gson.fromJson(body, Scores.class);
-			System.out.println(scores.getMatchScores().get(0).getMatchNumber());
 		}
-	}
-	public void getRanks(String event)
-	{
-		File f = new File("Cache/" + event +"-ranks.txt");
-		if (!f.exists() && !f.isDirectory())
+		else if (response.getStatus() == 304)// no new data
 		{
-			
-			Client client = ClientBuilder.newClient();
-			// Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" +
-			// teamNumber).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
-			Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/rankings/"+event).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
-			System.out.println("status: " + response.getStatus());
-			System.out.println("headers: " + response.getHeaders());
-			String body = response.readEntity(String.class);
+			System.out.println("No new data, using old data");
 			try
 			{
-				PrintWriter out = new PrintWriter("Cache/" + event +"-ranks.txt");
-				out.println(body);
-				out.close();
+				body = new String(Files.readAllBytes(Paths.get("Cache/" + fileName + ".txt")));
 			}
-			catch (FileNotFoundException e)
+			catch (IOException e)
 			{
 				e.printStackTrace();
-				System.out.println("Error writing to file");
 			}
-//			Gson gson = new Gson();
-//			Scores scores = gson.fromJson(body, Scores.class);
-//			System.out.println(scores.getMatchScores().get(0).getMatchNumber());
 		}
+		return body;
 	}
 }

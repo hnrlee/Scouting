@@ -4,5 +4,5 @@ import java.util.ArrayList;
 
 public class EventSchedule
 {
-	public ArrayList<Schedule> Schedule = new ArrayList<Schedule>();
+	private ArrayList<Schedule> Schedule = new ArrayList<Schedule>();
 }
