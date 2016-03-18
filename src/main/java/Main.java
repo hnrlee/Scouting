@@ -7,6 +7,7 @@ public class Main {
 		api.getTeams();
 		api.getEvents();
 		api.getMatchDetails("CAMA", 254, "qual");
+		api.getRanks("CADA");
 		new GUI();
 	}
 }

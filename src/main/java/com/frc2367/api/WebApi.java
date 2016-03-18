@@ -88,6 +88,8 @@ public class WebApi
 			{
 				System.out.println("Error writing to file");
 			}
+			Gson gson = new Gson();
+			
 		}
 	}
 
@@ -118,6 +120,35 @@ public class WebApi
 			Gson gson = new Gson();
 			Scores scores = gson.fromJson(body, Scores.class);
 			System.out.println(scores.getMatchScores().get(0).getMatchNumber());
-		}	
+		}
+	}
+	public void getRanks(String event)
+	{
+		File f = new File("Cache/" + event +"-ranks.txt");
+		if (!f.exists() && !f.isDirectory())
+		{
+			
+			Client client = ClientBuilder.newClient();
+			// Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/scores/" + event + "/" + level + "?teamNumber=" +
+			// teamNumber).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
+			Response response = client.target("https://frc-api.firstinspires.org/v2.0/2016/rankings/"+event).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).get();
+			System.out.println("status: " + response.getStatus());
+			System.out.println("headers: " + response.getHeaders());
+			String body = response.readEntity(String.class);
+			try
+			{
+				PrintWriter out = new PrintWriter("Cache/" + event +"-ranks.txt");
+				out.println(body);
+				out.close();
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+				System.out.println("Error writing to file");
+			}
+//			Gson gson = new Gson();
+//			Scores scores = gson.fromJson(body, Scores.class);
+//			System.out.println(scores.getMatchScores().get(0).getMatchNumber());
+		}
 	}
 }

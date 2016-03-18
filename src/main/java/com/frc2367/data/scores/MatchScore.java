@@ -2,6 +2,7 @@ package com.frc2367.data.scores;
 
 import java.util.ArrayList;
 
+
 public class MatchScore
 {
 
