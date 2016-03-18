@@ -1,6 +1,6 @@
 package com.frc2367.data;
 
-public class Team {
+public class ScoutedTeam {
 
 	// Defense Booleans
 	// Underscore denotes autonomous ability

@@ -1,4 +1,4 @@
-package com.frc2367.api;
+package com.frc2367.data.scores;
 
 public class Alliance
 {
