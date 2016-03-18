@@ -1,5 +1,7 @@
 package com.frc2367.gui;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,9 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 public class GUI {
-	private JFrame mainFrame = new JFrame("The Dankest Scouting App");
+
 	private JTabbedPane tabs = new JTabbedPane();
 	private JPanel pitData = new JPanel(new GridLayout(2, 2));
 	private JPanel teamMatchData = new JPanel(new GridLayout(3, 3));
@@ -22,6 +25,7 @@ public class GUI {
 	private ImageIcon teamMatchDataIcon = new ImageIcon("Icons/Boulder.png");
 	private ImageIcon fullMatchDataIcon = new ImageIcon("Icons/portcullis.png");
 	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
+	private boolean isFullscreen = false;
 
 	public GUI() {
 
@@ -37,6 +41,11 @@ public class GUI {
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
 		setupPitData();
+
+		final JFrame mainFrame = new JFrame("The Dankest Scouting App");
+		// mainFrame.setUndecorated(true);
+
+		final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 
 		// frame setup
 		mainFrame.add(tabs);
@@ -73,6 +82,15 @@ public class GUI {
 				if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
 					if (ctrl)
 						tabs.setSelectedIndex(3);
+				}
+				if (e.getKeyCode() == KeyEvent.VK_F) {
+					if (ctrl && !isFullscreen) {
+						device.setFullScreenWindow(mainFrame);
+						isFullscreen = true;
+					} else if (ctrl && isFullscreen) {
+						device.setFullScreenWindow(null);
+						isFullscreen = false;
+					}
 				}
 
 			}
@@ -158,10 +176,20 @@ public class GUI {
 
 		// top right, basic robot functions, autonomous functions,
 		// make sure to include 1 ball auto AND 2 ball auto
-		JPanel tr = new JPanel(new GridLayout());
+		JPanel tr = new JPanel(new GridLayout(5, 1));
 
 		// bottom left, data input, speed, tean number, name, etc
 		JPanel bl = new JPanel(new GridLayout());
+		JLabel teamNumberLabel = new JLabel("Team Number");
+		JTextField teamNumberField = new JTextField();
+		JLabel robotNameLabel = new JLabel("Robot Name");
+		JTextField robotNameField = new JTextField();
+		JLabel speed1Label = new JLabel("Speed 1");
+		JTextField speed1Field = new JTextField();
+		JLabel speed2Label = new JLabel("Speed 2");
+		JTextField speed2Field = new JTextField();
+		JLabel teamNameLabel = new JLabel("Team Name");
+		JTextField teamNameField = new JTextField();
 
 		// bottom right, notes and whatever else i can think of
 		JPanel br = new JPanel(new GridLayout());
