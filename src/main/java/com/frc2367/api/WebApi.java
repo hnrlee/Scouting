@@ -41,8 +41,8 @@ public class WebApi
 	private EventTeams eventTeams;
 	private boolean forceNoUpdate;
 	private ArrayList<ScoutedTeam> scoutedTeams;
-	
-	public WebApi(String competition, boolean forceNoUpdate,ArrayList<ScoutedTeam> scoutedTeams)
+
+	public WebApi(String competition, boolean forceNoUpdate, ArrayList<ScoutedTeam> scoutedTeams)
 	{
 		Scanner scan = null;
 		try
@@ -54,84 +54,126 @@ public class WebApi
 			System.out.println("error reading key");
 		}
 		apiKey = scan.nextLine();
-		System.out.println(apiKey);
 		this.competition = competition;
 		this.forceNoUpdate = forceNoUpdate;
 		this.scoutedTeams = scoutedTeams;
 	}
 
+	public ScoutedTeam findScoutedTeam(int num)
+	{
+		for (ScoutedTeam team : this.scoutedTeams)
+		{
+			if (team.getTeamNum() == num)
+				return team;
+		}
+		return null;
+	}
+
 	public void updateData()
 	{
-
 		eventTeams = this.getTeams();
 		for (TeamInfo team : eventTeams.getTeams())
 		{
 			Events teamEvents = this.getEvents(team.getTeamNumber());
-			System.out.println(teamEvents.getEvents().size());
-			//TODO: MAKE this work
 			for (Event event : teamEvents.getEvents())
 			{
 				EventSchedule eventSchedule = this.getSchedule(event.getCode(), team.getTeamNumber());
 				Scores scoresQual = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "qual");
 				Scores scoresPlayoff = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "playoff");
+				System.out.println(scoresQual.getMatchScores().size());
 				MatchScore score;
-				int scheduleIndex=0;
-				for(int i = 0;i<scoresQual.getMatchScores().size();i++)
+				int scheduleIndex = 0;
+				for (int i = 0; i < scoresQual.getMatchScores().size(); i++)
 				{
 					scheduleIndex = i;
 					score = scoresQual.getMatchScores().get(i);
-					if(score.getMatchNumber()==eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
+					if (score.getMatchNumber() == eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
 					{
-						if(eventSchedule.getSchedule().get(scheduleIndex).getDescription().toLowerCase().contains(score.getMatchLevel()))
+						if (eventSchedule.getSchedule().get(scheduleIndex).getDescription().contains(score.getMatchLevel()))
 						{
-							for(Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
+							for (Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
 							{
-								if(scheduleTeam.getNumber()==team.getTeamNumber())
+								if (scheduleTeam.getNumber() == team.getTeamNumber())
 								{
-									if(scheduleTeam.getStation().toLowerCase().contains("blue"))
+									if (scheduleTeam.getStation().toLowerCase().contains("blue"))
 									{
-//										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
-//										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(0));
+										ScoutedTeam scTeam = null;
+										if ((scTeam = findScoutedTeam(team.getTeamNumber())) != null)
+										{
+											scTeam.getAllMatches().add(score.getAlliances().get(0));
+										}
+										else
+										{
+											this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
+											this.scoutedTeams.get(this.scoutedTeams.size() - 1).getAllMatches().add(score.getAlliances().get(0));
+										}
 									}
-									else if(scheduleTeam.getStation().toLowerCase().contains("red"))
+									else if (scheduleTeam.getStation().toLowerCase().contains("red"))
 									{
-//										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
-//										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(1));
+										ScoutedTeam scTeam = null;
+										if ((scTeam = findScoutedTeam(team.getTeamNumber())) != null)
+										{
+											scTeam.getAllMatches().add(score.getAlliances().get(0));
+										}
+										else
+										{
+											this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
+											this.scoutedTeams.get(this.scoutedTeams.size() - 1).getAllMatches().add(score.getAlliances().get(1));
+										}
 									}
 								}
 							}
 						}
 					}
-					
 				}
 				for (int i = 0; i < scoresPlayoff.getMatchScores().size(); i++)
 				{
-					scheduleIndex+=1;
+					scheduleIndex = i;
 					score = scoresPlayoff.getMatchScores().get(i);
-					if(score.getMatchNumber()==eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
+					if (score.getMatchNumber() == eventSchedule.getSchedule().get(scheduleIndex).getMatchNumber())
 					{
-						if(eventSchedule.getSchedule().get(scheduleIndex).getDescription().toLowerCase().contains(score.getMatchLevel()))
+						if (eventSchedule.getSchedule().get(scheduleIndex).getDescription().contains(score.getMatchLevel()))
 						{
-							for(Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
+							for (Team scheduleTeam : eventSchedule.getSchedule().get(scheduleIndex).getTeams())
 							{
-								if(scheduleTeam.getNumber()==team.getTeamNumber())
+								if (scheduleTeam.getNumber() == team.getTeamNumber())
 								{
-									if(scheduleTeam.getStation().toLowerCase().contains("blue"))
+									if (scheduleTeam.getStation().toLowerCase().contains("blue"))
 									{
-										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
-										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(0));
+										ScoutedTeam scTeam = null;
+										if ((scTeam = findScoutedTeam(team.getTeamNumber())) != null)
+										{
+											scTeam.getAllMatches().add(score.getAlliances().get(0));
+										}
+										else
+										{
+											this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
+											this.scoutedTeams.get(this.scoutedTeams.size() - 1).getAllMatches().add(score.getAlliances().get(0));
+										}
 									}
-									else if(scheduleTeam.getStation().toLowerCase().contains("red"))
+									else if (scheduleTeam.getStation().toLowerCase().contains("red"))
 									{
-										this.scoutedTeams.add(new ScoutedTeam(team.getName(),team.getTeamNumber()));
-										this.scoutedTeams.get(this.scoutedTeams.size()-1).getAllMatches().add(score.getAlliances().get(1));
+										ScoutedTeam scTeam = null;
+										if ((scTeam = findScoutedTeam(team.getTeamNumber())) != null)
+										{
+											scTeam.getAllMatches().add(score.getAlliances().get(0));
+										}
+										else
+										{
+											this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
+											this.scoutedTeams.get(this.scoutedTeams.size() - 1).getAllMatches().add(score.getAlliances().get(1));
+										}
 									}
 								}
 							}
 						}
 					}
-					
 				}
+			}
+			ScoutedTeam scTeam = null;
+			if ((scTeam = findScoutedTeam(team.getTeamNumber())) == null)
+			{
+				this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
 			}
 		}
 		System.out.println("Done updating");
@@ -156,7 +198,8 @@ public class WebApi
 		String json = this.makeRequest("http://thebluealliance.com/api/v2/event/2016" + competition + "/teams", competition + "-teams", false);
 
 		Type fooType = new TypeToken<ArrayList<TeamInfo>>()
-		{}.getType();
+		{
+		}.getType();
 		ArrayList<TeamInfo> array = new Gson().fromJson(json, fooType);
 		EventTeams teams = new EventTeams();
 		teams.setTeams(array);
