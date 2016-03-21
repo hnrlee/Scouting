@@ -6,11 +6,13 @@ import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -91,6 +93,13 @@ public class GUI {
 						device.setFullScreenWindow(null);
 						isFullscreen = false;
 					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+					if (ctrl)
+						if (tabs.getSelectedIndex() < 3)
+							tabs.setSelectedIndex(tabs.getSelectedIndex() + 1);
+						else
+							tabs.setSelectedIndex(0);
 				}
 
 			}
@@ -176,20 +185,80 @@ public class GUI {
 
 		// top right, basic robot functions, autonomous functions,
 		// make sure to include 1 ball auto AND 2 ball auto
-		JPanel tr = new JPanel(new GridLayout(5, 1));
+		JPanel tr = new JPanel(new GridLayout(1, 2));
+		JPanel autoBallGroupPanel = new JPanel(new GridLayout(7, 1));
+		tr.add(autoBallGroupPanel);
+
+		autoBallGroupPanel.add(new JLabel("Autonomous Shooter Capabilities"));
+		ButtonGroup autoBallGroup = new ButtonGroup();
+		JRadioButtonMenuItem[] autoBalls = new JRadioButtonMenuItem[6];
+		autoBalls[0] = new JRadioButtonMenuItem("Zero Boulders");
+		autoBalls[1] = new JRadioButtonMenuItem("One Low Goal");
+		autoBalls[2] = new JRadioButtonMenuItem("One High Goal");
+		autoBalls[3] = new JRadioButtonMenuItem("One Low and One High");
+		autoBalls[4] = new JRadioButtonMenuItem("2 Low Goals");
+		autoBalls[5] = new JRadioButtonMenuItem("2 High Goals");
+		for (int i = 0; i < autoBalls.length; i++) {
+			autoBallGroup.add(autoBalls[i]);
+			autoBallGroupPanel.add(autoBalls[i]);
+		}
+
+		JPanel trRightSide = new JPanel(new GridLayout(11, 1));
+		tr.add(trRightSide);
+
+		JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
+		teleOpCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
+		teleOpCapabilities[1] = new JCheckBoxMenuItem("High Goal");
+		trRightSide.add(new JLabel("Teleop Capabilities"));
+		for (int i = 0; i < teleOpCapabilities.length; i++) {
+			trRightSide.add(teleOpCapabilities[i]);
+		}
+
+		ButtonGroup autoCapabilitiesGroup = new ButtonGroup();
+		JRadioButtonMenuItem[] autoCapabilities = new JRadioButtonMenuItem[3];
+		autoCapabilities[0] = new JRadioButtonMenuItem("Does not reach or cross defense");
+		autoCapabilities[1] = new JRadioButtonMenuItem("Reach defense");
+		autoCapabilities[2] = new JRadioButtonMenuItem("Cross Defense");
+		trRightSide.add(new JLabel("Autonomous Capabilities"));
+		for (int i = 0; i < autoCapabilities.length; i++) {
+			autoCapabilitiesGroup.add(autoCapabilities[i]);
+			trRightSide.add(autoCapabilities[i]);
+
+		}
+
+		ButtonGroup towerAttackGroup = new ButtonGroup();
+		JRadioButtonMenuItem[] towerAttack = new JRadioButtonMenuItem[3];
+		towerAttack[0] = new JRadioButtonMenuItem("Cannot Attack Tower");
+		towerAttack[1] = new JRadioButtonMenuItem("Can Challenge");
+		towerAttack[2] = new JRadioButtonMenuItem("Can Scale");
+		trRightSide.add(new JLabel("Tower Attack Capabilities"));
+		for (int i = 0; i < towerAttack.length; i++) {
+			towerAttackGroup.add(towerAttack[i]);
+			trRightSide.add(towerAttack[i]);
+		}
 
 		// bottom left, data input, speed, tean number, name, etc
-		JPanel bl = new JPanel(new GridLayout());
+		JPanel bl = new JPanel(new GridLayout(5, 2));
 		JLabel teamNumberLabel = new JLabel("Team Number");
-		JTextField teamNumberField = new JTextField();
+		JTextField teamNumberField = new JTextField("0");
 		JLabel robotNameLabel = new JLabel("Robot Name");
-		JTextField robotNameField = new JTextField();
-		JLabel speed1Label = new JLabel("Speed 1");
-		JTextField speed1Field = new JTextField();
-		JLabel speed2Label = new JLabel("Speed 2");
-		JTextField speed2Field = new JTextField();
+		JTextField robotNameField = new JTextField("null");
+		JLabel speed1Label = new JLabel("Speed 1 (ft/sec)");
+		JTextField speed1Field = new JTextField("0");
+		JLabel speed2Label = new JLabel("Speed 2(ft/sec)");
+		JTextField speed2Field = new JTextField("0");
 		JLabel teamNameLabel = new JLabel("Team Name");
-		JTextField teamNameField = new JTextField();
+		JTextField teamNameField = new JTextField("null");
+		bl.add(teamNumberLabel);
+		bl.add(teamNumberField);
+		bl.add(robotNameLabel);
+		bl.add(robotNameField);
+		bl.add(speed1Label);
+		bl.add(speed1Field);
+		bl.add(speed2Label);
+		bl.add(speed2Field);
+		bl.add(teamNameLabel);
+		bl.add(teamNameField);
 
 		// bottom right, notes and whatever else i can think of
 		JPanel br = new JPanel(new GridLayout());
