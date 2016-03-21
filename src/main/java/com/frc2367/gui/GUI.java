@@ -1,5 +1,6 @@
 package com.frc2367.gui;
 
+import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
@@ -8,18 +9,21 @@ import java.awt.event.KeyListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class GUI {
 
 	private JTabbedPane tabs = new JTabbedPane();
-	private JPanel pitData = new JPanel(new GridLayout(2, 2));
+	private JPanel pitData = new JPanel(new BorderLayout());
+	private JPanel pitDataInfo = new JPanel(new GridLayout(2, 2));
 	private JPanel teamMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel fullMatchData = new JPanel(new GridLayout(3, 3));
 	private JPanel basicStatPanel = new JPanel(new GridLayout(3, 3));
@@ -32,6 +36,7 @@ public class GUI {
 	public GUI() {
 
 		// Tab setup
+
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
 		tabs.addTab("Team Match Data", teamMatchDataIcon, teamMatchData, "Enter individual team match data here.");
@@ -42,7 +47,7 @@ public class GUI {
 				"See data about an individual team here.");
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
-		setupPitData();
+		setuppitData();
 
 		final JFrame mainFrame = new JFrame("The Dankest Scouting App");
 		// mainFrame.setUndecorated(true);
@@ -115,7 +120,11 @@ public class GUI {
 
 	}
 
-	public void setupPitData() {
+	public void setuppitData() {
+		JButton submitButton = new JButton("Submit");
+		pitData.add(pitDataInfo, BorderLayout.CENTER);
+		pitData.add(submitButton, BorderLayout.SOUTH);
+
 		// top left, defenses (auto and tele)
 		// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 		int numberOfDefenses = 9;
@@ -189,13 +198,14 @@ public class GUI {
 		JPanel autoBallGroupPanel = new JPanel(new GridLayout(7, 1));
 		tr.add(autoBallGroupPanel);
 
+		// autonomous Shooter Stuff, radio buttons
 		autoBallGroupPanel.add(new JLabel("Autonomous Shooter Capabilities"));
 		ButtonGroup autoBallGroup = new ButtonGroup();
 		JRadioButtonMenuItem[] autoBalls = new JRadioButtonMenuItem[6];
 		autoBalls[0] = new JRadioButtonMenuItem("Zero Boulders");
-		autoBalls[1] = new JRadioButtonMenuItem("One Low Goal");
-		autoBalls[2] = new JRadioButtonMenuItem("One High Goal");
-		autoBalls[3] = new JRadioButtonMenuItem("One Low and One High");
+		autoBalls[1] = new JRadioButtonMenuItem("1 Low Goal");
+		autoBalls[2] = new JRadioButtonMenuItem("1 High Goal");
+		autoBalls[3] = new JRadioButtonMenuItem("1 Low and 1 High");
 		autoBalls[4] = new JRadioButtonMenuItem("2 Low Goals");
 		autoBalls[5] = new JRadioButtonMenuItem("2 High Goals");
 		for (int i = 0; i < autoBalls.length; i++) {
@@ -206,14 +216,7 @@ public class GUI {
 		JPanel trRightSide = new JPanel(new GridLayout(11, 1));
 		tr.add(trRightSide);
 
-		JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
-		teleOpCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
-		teleOpCapabilities[1] = new JCheckBoxMenuItem("High Goal");
-		trRightSide.add(new JLabel("Teleop Capabilities"));
-		for (int i = 0; i < teleOpCapabilities.length; i++) {
-			trRightSide.add(teleOpCapabilities[i]);
-		}
-
+		// autonomous defenses
 		ButtonGroup autoCapabilitiesGroup = new ButtonGroup();
 		JRadioButtonMenuItem[] autoCapabilities = new JRadioButtonMenuItem[3];
 		autoCapabilities[0] = new JRadioButtonMenuItem("Does not reach or cross defense");
@@ -223,9 +226,18 @@ public class GUI {
 		for (int i = 0; i < autoCapabilities.length; i++) {
 			autoCapabilitiesGroup.add(autoCapabilities[i]);
 			trRightSide.add(autoCapabilities[i]);
-
 		}
 
+		// teleop shooter capabilities
+		JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
+		teleOpCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
+		teleOpCapabilities[1] = new JCheckBoxMenuItem("High Goal");
+		trRightSide.add(new JLabel("Teleop Capabilities"));
+		for (int i = 0; i < teleOpCapabilities.length; i++) {
+			trRightSide.add(teleOpCapabilities[i]);
+		}
+
+		// tower abilities
 		ButtonGroup towerAttackGroup = new ButtonGroup();
 		JRadioButtonMenuItem[] towerAttack = new JRadioButtonMenuItem[3];
 		towerAttack[0] = new JRadioButtonMenuItem("Cannot Attack Tower");
@@ -261,12 +273,14 @@ public class GUI {
 		bl.add(teamNameField);
 
 		// bottom right, notes and whatever else i can think of
-		JPanel br = new JPanel(new GridLayout());
+		JPanel br = new JPanel(new BorderLayout());
+		br.add(new JLabel("Notes"), BorderLayout.NORTH);
+		br.add(new JTextArea(), BorderLayout.CENTER);
 
-		pitData.add(tl);
-		pitData.add(tr);
-		pitData.add(bl);
-		pitData.add(br);
+		pitDataInfo.add(tl);
+		pitDataInfo.add(tr);
+		pitDataInfo.add(bl);
+		pitDataInfo.add(br);
 	}
 
 }
