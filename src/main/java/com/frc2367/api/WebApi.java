@@ -80,7 +80,6 @@ public class WebApi
 				EventSchedule eventSchedule = this.getSchedule(event.getCode(), team.getTeamNumber());
 				Scores scoresQual = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "qual");
 				Scores scoresPlayoff = this.getMatchDetails(event.getCode(), team.getTeamNumber(), "playoff");
-				System.out.println(scoresQual.getMatchScores().size());
 				MatchScore score;
 				int scheduleIndex = 0;
 				for (int i = 0; i < scoresQual.getMatchScores().size(); i++)
@@ -197,9 +196,7 @@ public class WebApi
 	{
 		String json = this.makeRequest("http://thebluealliance.com/api/v2/event/2016" + competition + "/teams", competition + "-teams", false);
 
-		Type fooType = new TypeToken<ArrayList<TeamInfo>>()
-		{
-		}.getType();
+		Type fooType = new TypeToken<ArrayList<TeamInfo>>(){}.getType();
 		ArrayList<TeamInfo> array = new Gson().fromJson(json, fooType);
 		EventTeams teams = new EventTeams();
 		teams.setTeams(array);
