@@ -20,6 +20,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class GUI {
 	public final static int numberOfDefenses = 9;
@@ -130,51 +131,49 @@ public class GUI {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == submitButton) {
-				// getting defense capabilities
-				for (int i = 0; i < numberOfDefenses; i++) {
-					autoDefenses[i] = autoChecks[i].isSelected();
-					teleDefenses[i] = teleChecks[i].isSelected();
-				}
-
-				// getting auto shooter capabilities
-				for (int i = 0; i < autoBalls.length; i++) {
-					if (autoBalls[i].isSelected())
-						autoShooter = i;
-				}
-				// reach, cross defense in auto
-				for (int i = 0; i < autoCapabilities.length; i++) {
-					if (autoCapabilities[i].isSelected())
-						autoDefenseReach = i;
-				}
-
-				// teleop shooter high, low ability
-				if (teleCapabilities[0].isSelected())
-					teleLow = true;
-				if (teleCapabilities[1].isSelected())
-					teleHigh = true;
-
-				// tower attack capability
-				for (int i = 0; i < towerAttack.length; i++) {
-					if (towerAttack[i].isSelected())
-						towerAttackCapability = i;
-				}
-
-				// team number and other string info
-				try {
-					teamNumber = Integer.parseInt(teamNumberField.getText());
-
-				} catch (Exception ex) {
-				}
-				try {
-					speed1 = Double.parseDouble(speed1Field.getText());
-					speed2 = Double.parseDouble(speed2Field.getText());
-				} catch (Exception ex) {
-				}
-				robotName = robotNameField.getText();
-				teamName = teamNameField.getText();
-				notes = noteArea.getText();
+			// getting defense capabilities
+			for (int i = 0; i < numberOfDefenses; i++) {
+				autoDefenses[i] = autoChecks[i].isSelected();
+				teleDefenses[i] = teleChecks[i].isSelected();
 			}
+
+			// getting auto shooter capabilities
+			for (int i = 0; i < autoBalls.length; i++) {
+				if (autoBalls[i].isSelected())
+					autoShooter = i;
+			}
+			// reach, cross defense in auto
+			for (int i = 0; i < autoCapabilities.length; i++) {
+				if (autoCapabilities[i].isSelected())
+					autoDefenseReach = i;
+			}
+
+			// teleop shooter high, low ability
+			if (teleCapabilities[0].isSelected())
+				teleLow = true;
+			if (teleCapabilities[1].isSelected())
+				teleHigh = true;
+
+			// tower attack capability
+			for (int i = 0; i < towerAttack.length; i++) {
+				if (towerAttack[i].isSelected())
+					towerAttackCapability = i;
+			}
+
+			// team number and other string info
+			try {
+				teamNumber = Integer.parseInt(teamNumberField.getText());
+
+			} catch (Exception ex) {
+			}
+			try {
+				speed1 = Double.parseDouble(speed1Field.getText());
+				speed2 = Double.parseDouble(speed2Field.getText());
+			} catch (Exception ex) {
+			}
+			robotName = robotNameField.getText();
+			teamName = teamNameField.getText();
+			notes = noteArea.getText();
 
 		}
 
@@ -205,6 +204,31 @@ public class GUI {
 		mainFrame.setVisible(true);
 		tabs.addKeyListener(new GeneralListener());
 		submitButton.addActionListener(new GeneralListener());
+
+		// all the action listeners!
+		GeneralListener gl = new GeneralListener();
+
+		for (int i = 0; i < autoChecks.length; i++) {
+			autoChecks[i].addActionListener(gl);
+			teleChecks[i].addActionListener(gl);
+		}
+		for (int i = 0; i < autoBalls.length; i++)
+			autoBalls[i].addActionListener(gl);
+		for (int i = 0; i < autoCapabilities.length; i++) {
+			autoCapabilities[i].addActionListener(gl);
+			towerAttack[i].addActionListener(gl);
+		}
+		for (int i = 0; i < teleCapabilities.length; i++)
+			teleCapabilities[i].addActionListener(gl);
+
+		teamNumberField.addActionListener(gl);
+		robotNameField.addActionListener(gl);
+		speed1Field.addActionListener(gl);
+		speed2Field.addActionListener(gl);
+		teamNameField.addActionListener(gl);
+
+		Timer t = new Timer(1000, gl);
+		t.start();
 
 	}
 
