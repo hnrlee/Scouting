@@ -28,7 +28,7 @@ public class GUI {
 	private JCheckBoxMenuItem[] teleChecks = new JCheckBoxMenuItem[numberOfDefenses];
 	private JRadioButtonMenuItem[] autoBalls = new JRadioButtonMenuItem[6];
 	private JRadioButtonMenuItem[] autoCapabilities = new JRadioButtonMenuItem[3];
-	private JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
+	private JCheckBoxMenuItem[] teleCapabilities = new JCheckBoxMenuItem[2];
 	private JRadioButtonMenuItem[] towerAttack = new JRadioButtonMenuItem[3];
 	private JLabel teamNumberLabel = new JLabel("Team Number");
 	private JTextField teamNumberField = new JTextField("0");
@@ -40,10 +40,11 @@ public class GUI {
 	private JTextField speed2Field = new JTextField("0");
 	private JLabel teamNameLabel = new JLabel("Team Name");
 	private JTextField teamNameField = new JTextField("null");
+	private JTextArea noteArea = new JTextArea();
 
 	private boolean[] autoDefenses = new boolean[numberOfDefenses];
 	private boolean[] teleDefenses = new boolean[numberOfDefenses];
-	private boolean autoHigh, autoLow, teleHigh, teleLow = false;
+	private boolean teleHigh, teleLow = false;
 	// 0 no goals, 1 one low goal, 2 one high goal, 3 one low and one high, 4
 	// two low goals, 5 two high goals
 	private int autoShooter = 0;
@@ -52,7 +53,8 @@ public class GUI {
 	// 0 no attack, 1 challenge, 2 climb
 	private int towerAttackCapability = 0;
 
-	private int teamNumber, speed1, speed2 = 0;
+	private int teamNumber = 0;
+	private double speed1, speed2;
 	private String robotName, teamName, notes;
 
 	// Frame and panel stuff
@@ -129,18 +131,49 @@ public class GUI {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == submitButton) {
-				//getting defense capabilities
+				// getting defense capabilities
 				for (int i = 0; i < numberOfDefenses; i++) {
 					autoDefenses[i] = autoChecks[i].isSelected();
 					teleDefenses[i] = teleChecks[i].isSelected();
 				}
-				
-				//getting auto shooter capabilities
-				for(int i = 0; i < 6; i++){
-					if(autoBalls[i].isSelected())
+
+				// getting auto shooter capabilities
+				for (int i = 0; i < autoBalls.length; i++) {
+					if (autoBalls[i].isSelected())
 						autoShooter = i;
 				}
+				// reach, cross defense in auto
+				for (int i = 0; i < autoCapabilities.length; i++) {
+					if (autoCapabilities[i].isSelected())
+						autoDefenseReach = i;
+				}
 
+				// teleop shooter high, low ability
+				if (teleCapabilities[0].isSelected())
+					teleLow = true;
+				if (teleCapabilities[1].isSelected())
+					teleHigh = true;
+
+				// tower attack capability
+				for (int i = 0; i < towerAttack.length; i++) {
+					if (towerAttack[i].isSelected())
+						towerAttackCapability = i;
+				}
+
+				// team number and other string info
+				try {
+					teamNumber = Integer.parseInt(teamNumberField.getText());
+
+				} catch (Exception ex) {
+				}
+				try {
+					speed1 = Double.parseDouble(speed1Field.getText());
+					speed2 = Double.parseDouble(speed2Field.getText());
+				} catch (Exception ex) {
+				}
+				robotName = robotNameField.getText();
+				teamName = teamNameField.getText();
+				notes = noteArea.getText();
 			}
 
 		}
@@ -279,11 +312,11 @@ public class GUI {
 
 		// teleop shooter capabilities
 
-		teleOpCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
-		teleOpCapabilities[1] = new JCheckBoxMenuItem("High Goal");
+		teleCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
+		teleCapabilities[1] = new JCheckBoxMenuItem("High Goal");
 		trRightSide.add(new JLabel("Teleop Capabilities"));
-		for (int i = 0; i < teleOpCapabilities.length; i++) {
-			trRightSide.add(teleOpCapabilities[i]);
+		for (int i = 0; i < teleCapabilities.length; i++) {
+			trRightSide.add(teleCapabilities[i]);
 		}
 
 		// tower abilities
@@ -315,7 +348,7 @@ public class GUI {
 		// bottom right, notes and whatever else i can think of
 		JPanel br = new JPanel(new BorderLayout());
 		br.add(new JLabel("Notes"), BorderLayout.NORTH);
-		br.add(new JTextArea(), BorderLayout.CENTER);
+		br.add(noteArea, BorderLayout.CENTER);
 
 		pitDataInfo.add(tl);
 		pitDataInfo.add(tr);
