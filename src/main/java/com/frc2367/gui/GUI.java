@@ -43,6 +43,7 @@ public class GUI {
 	private JTextField teamNameField = new JTextField("null");
 	private JTextArea noteArea = new JTextArea();
 
+	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	private boolean[] autoDefenses = new boolean[numberOfDefenses];
 	private boolean[] teleDefenses = new boolean[numberOfDefenses];
 	private boolean teleHigh, teleLow = false;
@@ -72,7 +73,9 @@ public class GUI {
 	private boolean isFullscreen = false;
 	final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 	final JFrame mainFrame = new JFrame("The Dankest Scouting App");
-	JButton submitButton = new JButton("Submit");
+	private JButton submitButton = new JButton("Submit");
+
+	private Timer t;
 
 	class GeneralListener implements KeyListener, ActionListener {
 
@@ -131,50 +134,57 @@ public class GUI {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// getting defense capabilities
-			for (int i = 0; i < numberOfDefenses; i++) {
-				autoDefenses[i] = autoChecks[i].isSelected();
-				teleDefenses[i] = teleChecks[i].isSelected();
-			}
+			if (e.getSource() == t) {
+				notes = noteArea.getText();
+			} else {
 
-			// getting auto shooter capabilities
-			for (int i = 0; i < autoBalls.length; i++) {
-				if (autoBalls[i].isSelected())
-					autoShooter = i;
-			}
-			// reach, cross defense in auto
-			for (int i = 0; i < autoCapabilities.length; i++) {
-				if (autoCapabilities[i].isSelected())
-					autoDefenseReach = i;
-			}
+				// getting defense capabilities
+				for (int i = 0; i < numberOfDefenses; i++) {
+					autoDefenses[i] = autoChecks[i].isSelected();
+					teleDefenses[i] = teleChecks[i].isSelected();
+				}
 
-			// teleop shooter high, low ability
-			if (teleCapabilities[0].isSelected())
-				teleLow = true;
-			if (teleCapabilities[1].isSelected())
-				teleHigh = true;
+				// getting auto shooter capabilities
+				for (int i = 0; i < autoBalls.length; i++) {
+					if (autoBalls[i].isSelected())
+						autoShooter = i;
+				}
+				// reach, cross defense in auto
+				for (int i = 0; i < autoCapabilities.length; i++) {
+					if (autoCapabilities[i].isSelected())
+						autoDefenseReach = i;
+				}
 
-			// tower attack capability
-			for (int i = 0; i < towerAttack.length; i++) {
-				if (towerAttack[i].isSelected())
-					towerAttackCapability = i;
+				// teleop shooter high, low ability
+				if (teleCapabilities[0].isSelected())
+					teleLow = true;
+				if (teleCapabilities[1].isSelected())
+					teleHigh = true;
+
+				// tower attack capability
+				for (int i = 0; i < towerAttack.length; i++) {
+					if (towerAttack[i].isSelected())
+						towerAttackCapability = i;
+				}
+
+				// team number and other string info
+				try {
+					teamNumber = Integer.parseInt(teamNumberField.getText());
+
+				} catch (Exception ex) {
+					teamNumberField.setText("INVALID");
+				}
+				try {
+					speed1 = Double.parseDouble(speed1Field.getText());
+					speed2 = Double.parseDouble(speed2Field.getText());
+				} catch (Exception ex) {
+					speed1Field.setText("INVALID");
+					speed2Field.setText("INVALID");
+				}
+				robotName = robotNameField.getText();
+				teamName = teamNameField.getText();
+
 			}
-
-			// team number and other string info
-			try {
-				teamNumber = Integer.parseInt(teamNumberField.getText());
-
-			} catch (Exception ex) {
-			}
-			try {
-				speed1 = Double.parseDouble(speed1Field.getText());
-				speed2 = Double.parseDouble(speed2Field.getText());
-			} catch (Exception ex) {
-			}
-			robotName = robotNameField.getText();
-			teamName = teamNameField.getText();
-			notes = noteArea.getText();
-
 		}
 
 	}
@@ -182,7 +192,6 @@ public class GUI {
 	public GUI() {
 
 		// Tab setup
-
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
 		tabs.addTab("Team Match Data", teamMatchDataIcon, teamMatchData, "Enter individual team match data here.");
@@ -195,8 +204,6 @@ public class GUI {
 
 		setuppitData();
 
-		// mainFrame.setUndecorated(true);
-
 		// frame setup
 		mainFrame.add(tabs);
 		mainFrame.setSize(1000, 500);
@@ -207,6 +214,7 @@ public class GUI {
 
 		// all the action listeners!
 		GeneralListener gl = new GeneralListener();
+		t = new Timer(1000, gl);
 
 		for (int i = 0; i < autoChecks.length; i++) {
 			autoChecks[i].addActionListener(gl);
@@ -227,7 +235,6 @@ public class GUI {
 		speed2Field.addActionListener(gl);
 		teamNameField.addActionListener(gl);
 
-		Timer t = new Timer(1000, gl);
 		t.start();
 
 	}
@@ -378,6 +385,59 @@ public class GUI {
 		pitDataInfo.add(tr);
 		pitDataInfo.add(bl);
 		pitDataInfo.add(br);
+	}
+
+	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
+	public boolean[] getAutoDefenses() {
+		return autoDefenses;
+	}
+
+	public boolean[] getTeleDefenses() {
+		return teleDefenses;
+	}
+
+	public boolean getTeleHigh() {
+		return teleHigh;
+	}
+
+	public boolean getTeleLow() {
+		return teleLow;
+	}
+
+	public int getAutoShooter() {
+		return autoShooter;
+	}
+
+	public int getAutoDefenseReach() {
+		return autoDefenseReach;
+	}
+
+	public int getTowerAttackCapability() {
+		return towerAttackCapability;
+	}
+
+	public int getTeamNumber() {
+		return teamNumber;
+	}
+
+	public double getSpeed1() {
+		return speed1;
+	}
+
+	public double getSpeed2() {
+		return speed2;
+	}
+
+	public String getRobotName() {
+		return robotName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public String getNotes() {
+		return notes;
 	}
 
 }
