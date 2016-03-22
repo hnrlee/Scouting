@@ -6,10 +6,10 @@ import com.frc2367.gui.GUI;
 
 public class Main {
 	public static void main(String[] args) {
-		new GUI();
+		GUI mainWindow = new GUI();
 		ArrayList<ScoutedTeam> teams = new ArrayList<ScoutedTeam>();
 		WebApi api = new WebApi("cada", true, teams);
 		api.updateData();
-		
+
 	}
 }
