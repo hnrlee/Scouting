@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import javax.ws.rs.Path;
@@ -41,9 +42,16 @@ public class WebApi
 	private EventTeams eventTeams;
 	private boolean forceNoUpdate;
 	private ArrayList<ScoutedTeam> scoutedTeams;
+	private PrintWriter logFile;
+	private int debugLevel = 2; //0 none, 1 logFile, 2 log and print
 
 	public WebApi(String competition, boolean forceNoUpdate, ArrayList<ScoutedTeam> scoutedTeams)
 	{
+		try {
+			logFile = new PrintWriter("log.txt");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		Scanner scan = null;
 		try
 		{
@@ -51,7 +59,7 @@ public class WebApi
 		}
 		catch (FileNotFoundException e)
 		{
-			System.out.println("error reading key");
+			debug("error reading key");
 		}
 		apiKey = scan.nextLine();
 		this.competition = competition;
@@ -230,7 +238,7 @@ public class WebApi
 		Client client = ClientBuilder.newClient();
 		Response response = null;
 		String body = null;
-		if (!forceNoUpdate && !f.exists() && !f.isDirectory())
+		if (!forceNoUpdate && ( !f.exists() && !f.isDirectory()))
 		{
 			System.out.println("No files, grabing new response");
 			if (auth)
@@ -251,6 +259,7 @@ public class WebApi
 					response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("Authorization", apiKey).header("If-Modified-Since", modDate).get();
 				else
 					response = client.target(request).request(MediaType.TEXT_PLAIN_TYPE).header("X-TBA-App-Id", "frc2367:team-analysis:v0.1").header("If-Modified-Since", modDate).get();
+				debug(modDate + " " + response.getHeaderString("Last-Modified"));
 			}
 			catch (IOException e)
 			{
@@ -260,9 +269,9 @@ public class WebApi
 		if (!forceNoUpdate && response.getStatus() == 200)// successful
 		{
 			body = response.readEntity(String.class);
-			System.out.println("Got new data");
+			debug("Got new data");
 			String lastMod = response.getHeaderString("Last-Modified");
-			try
+			try 
 			{
 				PrintWriter outBody = new PrintWriter("Cache/" + fileName + ".txt");
 				outBody.println(body);
@@ -274,7 +283,7 @@ public class WebApi
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
-				System.out.println("Error writing to file");
+				debug("Error writing to file");
 			}
 		}
 		else if (forceNoUpdate || response.getStatus() == 304)// no new data
@@ -290,5 +299,17 @@ public class WebApi
 			}
 		}
 		return body;
+	}
+	public void debug(String msg)
+	{
+		Calendar cal = Calendar.getInstance();
+		if(debugLevel == 1)
+			logFile.println(cal + ":------: " + msg);
+		else if(debugLevel == 2)
+		{
+			logFile.println(cal + ":------: " +msg);
+			System.out.println(msg);
+		}
+			
 	}
 }
