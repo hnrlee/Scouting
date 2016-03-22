@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -20,7 +22,40 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class GUI {
+	public final static int numberOfDefenses = 9;
+	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
+	private JCheckBoxMenuItem[] autoChecks = new JCheckBoxMenuItem[numberOfDefenses];
+	private JCheckBoxMenuItem[] teleChecks = new JCheckBoxMenuItem[numberOfDefenses];
+	private JRadioButtonMenuItem[] autoBalls = new JRadioButtonMenuItem[6];
+	private JRadioButtonMenuItem[] autoCapabilities = new JRadioButtonMenuItem[3];
+	private JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
+	private JRadioButtonMenuItem[] towerAttack = new JRadioButtonMenuItem[3];
+	private JLabel teamNumberLabel = new JLabel("Team Number");
+	private JTextField teamNumberField = new JTextField("0");
+	private JLabel robotNameLabel = new JLabel("Robot Name");
+	private JTextField robotNameField = new JTextField("null");
+	private JLabel speed1Label = new JLabel("Speed 1 (ft/sec)");
+	private JTextField speed1Field = new JTextField("0");
+	private JLabel speed2Label = new JLabel("Speed 2(ft/sec)");
+	private JTextField speed2Field = new JTextField("0");
+	private JLabel teamNameLabel = new JLabel("Team Name");
+	private JTextField teamNameField = new JTextField("null");
 
+	private boolean[] autoDefenses = new boolean[numberOfDefenses];
+	private boolean[] teleDefenses = new boolean[numberOfDefenses];
+	private boolean autoHigh, autoLow, teleHigh, teleLow = false;
+	// 0 no goals, 1 one low goal, 2 one high goal, 3 one low and one high, 4
+	// two low goals, 5 two high goals
+	private int autoShooter = 0;
+	// 0 no move, 1 reach defense, 2 cross defense
+	private int autoDefenseReach = 0;
+	// 0 no attack, 1 challenge, 2 climb
+	private int towerAttackCapability = 0;
+
+	private int teamNumber, speed1, speed2 = 0;
+	private String robotName, teamName, notes;
+
+	// Frame and panel stuff
 	private JTabbedPane tabs = new JTabbedPane();
 	private JPanel pitData = new JPanel(new BorderLayout());
 	private JPanel pitDataInfo = new JPanel(new GridLayout(2, 2));
@@ -32,6 +67,85 @@ public class GUI {
 	private ImageIcon fullMatchDataIcon = new ImageIcon("Icons/portcullis.png");
 	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
 	private boolean isFullscreen = false;
+	final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+	final JFrame mainFrame = new JFrame("The Dankest Scouting App");
+	JButton submitButton = new JButton("Submit");
+
+	class GeneralListener implements KeyListener, ActionListener {
+
+		boolean ctrl = false;
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// Unused
+
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_CONTROL)
+				ctrl = true;
+			if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
+				if (ctrl)
+					tabs.setSelectedIndex(0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
+				if (ctrl)
+					tabs.setSelectedIndex(1);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
+				if (ctrl)
+					tabs.setSelectedIndex(2);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
+				if (ctrl)
+					tabs.setSelectedIndex(3);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F) {
+				if (ctrl && !isFullscreen) {
+					device.setFullScreenWindow(mainFrame);
+					isFullscreen = true;
+				} else if (ctrl && isFullscreen) {
+					device.setFullScreenWindow(null);
+					isFullscreen = false;
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				if (ctrl)
+					if (tabs.getSelectedIndex() < 3)
+						tabs.setSelectedIndex(tabs.getSelectedIndex() + 1);
+					else
+						tabs.setSelectedIndex(0);
+			}
+
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_CONTROL)
+				ctrl = false;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == submitButton) {
+				//getting defense capabilities
+				for (int i = 0; i < numberOfDefenses; i++) {
+					autoDefenses[i] = autoChecks[i].isSelected();
+					teleDefenses[i] = teleChecks[i].isSelected();
+				}
+				
+				//getting auto shooter capabilities
+				for(int i = 0; i < 6; i++){
+					if(autoBalls[i].isSelected())
+						autoShooter = i;
+				}
+
+			}
+
+		}
+
+	}
 
 	public GUI() {
 
@@ -49,88 +163,23 @@ public class GUI {
 
 		setuppitData();
 
-		final JFrame mainFrame = new JFrame("The Dankest Scouting App");
 		// mainFrame.setUndecorated(true);
-
-		final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 
 		// frame setup
 		mainFrame.add(tabs);
 		mainFrame.setSize(1000, 500);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
-
-		class KeyboardListen implements KeyListener {
-
-			boolean ctrl = false;
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_CONTROL)
-					ctrl = true;
-				if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
-					if (ctrl)
-						tabs.setSelectedIndex(0);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
-					if (ctrl)
-						tabs.setSelectedIndex(1);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
-					if (ctrl)
-						tabs.setSelectedIndex(2);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
-					if (ctrl)
-						tabs.setSelectedIndex(3);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_F) {
-					if (ctrl && !isFullscreen) {
-						device.setFullScreenWindow(mainFrame);
-						isFullscreen = true;
-					} else if (ctrl && isFullscreen) {
-						device.setFullScreenWindow(null);
-						isFullscreen = false;
-					}
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					if (ctrl)
-						if (tabs.getSelectedIndex() < 3)
-							tabs.setSelectedIndex(tabs.getSelectedIndex() + 1);
-						else
-							tabs.setSelectedIndex(0);
-				}
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_CONTROL)
-					ctrl = false;
-			}
-
-		}
-		tabs.addKeyListener(new KeyboardListen());
+		tabs.addKeyListener(new GeneralListener());
+		submitButton.addActionListener(new GeneralListener());
 
 	}
 
 	public void setuppitData() {
-		JButton submitButton = new JButton("Submit");
 		pitData.add(pitDataInfo, BorderLayout.CENTER);
 		pitData.add(submitButton, BorderLayout.SOUTH);
-
 		// top left, defenses (auto and tele)
-		// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
-		int numberOfDefenses = 9;
 		JPanel tl = new JPanel(new GridLayout(numberOfDefenses + 1, 2));
-		JCheckBoxMenuItem[] autoChecks = new JCheckBoxMenuItem[numberOfDefenses];
-		JCheckBoxMenuItem[] teleChecks = new JCheckBoxMenuItem[numberOfDefenses];
 		tl.add(new JLabel("Autonomous"));
 		tl.add(new JLabel("Teleoperated"));
 		for (int i = 0; i < autoChecks.length; i++) {
@@ -201,7 +250,7 @@ public class GUI {
 		// autonomous Shooter Stuff, radio buttons
 		autoBallGroupPanel.add(new JLabel("Autonomous Shooter Capabilities"));
 		ButtonGroup autoBallGroup = new ButtonGroup();
-		JRadioButtonMenuItem[] autoBalls = new JRadioButtonMenuItem[6];
+
 		autoBalls[0] = new JRadioButtonMenuItem("Zero Boulders");
 		autoBalls[1] = new JRadioButtonMenuItem("1 Low Goal");
 		autoBalls[2] = new JRadioButtonMenuItem("1 High Goal");
@@ -218,7 +267,7 @@ public class GUI {
 
 		// autonomous defenses
 		ButtonGroup autoCapabilitiesGroup = new ButtonGroup();
-		JRadioButtonMenuItem[] autoCapabilities = new JRadioButtonMenuItem[3];
+
 		autoCapabilities[0] = new JRadioButtonMenuItem("Does not reach or cross defense");
 		autoCapabilities[1] = new JRadioButtonMenuItem("Reach defense");
 		autoCapabilities[2] = new JRadioButtonMenuItem("Cross Defense");
@@ -229,7 +278,7 @@ public class GUI {
 		}
 
 		// teleop shooter capabilities
-		JCheckBoxMenuItem[] teleOpCapabilities = new JCheckBoxMenuItem[2];
+
 		teleOpCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
 		teleOpCapabilities[1] = new JCheckBoxMenuItem("High Goal");
 		trRightSide.add(new JLabel("Teleop Capabilities"));
@@ -239,7 +288,7 @@ public class GUI {
 
 		// tower abilities
 		ButtonGroup towerAttackGroup = new ButtonGroup();
-		JRadioButtonMenuItem[] towerAttack = new JRadioButtonMenuItem[3];
+
 		towerAttack[0] = new JRadioButtonMenuItem("Cannot Attack Tower");
 		towerAttack[1] = new JRadioButtonMenuItem("Can Challenge");
 		towerAttack[2] = new JRadioButtonMenuItem("Can Scale");
@@ -251,16 +300,7 @@ public class GUI {
 
 		// bottom left, data input, speed, tean number, name, etc
 		JPanel bl = new JPanel(new GridLayout(5, 2));
-		JLabel teamNumberLabel = new JLabel("Team Number");
-		JTextField teamNumberField = new JTextField("0");
-		JLabel robotNameLabel = new JLabel("Robot Name");
-		JTextField robotNameField = new JTextField("null");
-		JLabel speed1Label = new JLabel("Speed 1 (ft/sec)");
-		JTextField speed1Field = new JTextField("0");
-		JLabel speed2Label = new JLabel("Speed 2(ft/sec)");
-		JTextField speed2Field = new JTextField("0");
-		JLabel teamNameLabel = new JLabel("Team Name");
-		JTextField teamNameField = new JTextField("null");
+
 		bl.add(teamNumberLabel);
 		bl.add(teamNumberField);
 		bl.add(robotNameLabel);
