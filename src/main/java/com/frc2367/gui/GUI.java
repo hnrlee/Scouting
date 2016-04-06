@@ -202,7 +202,7 @@ public class GUI {
 				"See data about an individual team here.");
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
-		setuppitData();
+		setupPitData();
 
 		// frame setup
 		mainFrame.add(tabs);
@@ -239,7 +239,7 @@ public class GUI {
 
 	}
 
-	public void setuppitData() {
+	public void setupPitData() {
 		pitData.add(pitDataInfo, BorderLayout.CENTER);
 		pitData.add(submitButton, BorderLayout.SOUTH);
 		// top left, defenses (auto and tele)
@@ -387,6 +387,10 @@ public class GUI {
 		pitDataInfo.add(br);
 	}
 
+	public void setupTeamInfo(){
+		
+	}
+	
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	public boolean[] getAutoDefenses() {
 		return autoDefenses;
