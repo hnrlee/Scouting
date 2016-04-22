@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -26,7 +27,9 @@ import com.frc2367.data.schedule.Team;
 import com.frc2367.data.scores.MatchScore;
 import com.frc2367.data.scores.Scores;
 import com.frc2367.data.teams.EventTeams;
+import com.frc2367.data.teams.SearchableTeam;
 import com.frc2367.data.teams.TeamInfo;
+import com.frc2367.gui.AutoCompleteJComboBox;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -183,6 +186,12 @@ public class WebApi
 				this.scoutedTeams.add(new ScoutedTeam(team.getNickname(), team.getTeamNumber()));
 			}
 		}
+		SearchableTeam searchable = new SearchableTeam(eventTeams.getTeams());
+		AutoCompleteJComboBox<TeamInfo> combo = new AutoCompleteJComboBox<TeamInfo>(searchable);
+		JFrame frame = new JFrame();
+		frame.add(combo);
+		frame.pack();
+		frame.setVisible(true);
 		System.out.println("Done updating");
 	}
 

@@ -3,7 +3,7 @@ package com.frc2367.data.teams;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TeamInfo
+public class TeamInfo implements Comparable<TeamInfo>
 {
 
 	private String website;
@@ -27,7 +27,6 @@ public class TeamInfo
 	
 	public TeamInfo()
 	{
-		
 	}
 
 	public String getWebsite()
@@ -84,5 +83,19 @@ public class TeamInfo
 	{
 		return nickname;
 	}
-	
+
+	public String getTeamNumberAsString()
+	{
+		return Integer.toString(teamNumber);
+	}
+	public String toString()
+	{
+		return Integer.toString(teamNumber) + " - "  + nickname;
+	}
+
+	@Override
+	public int compareTo(TeamInfo arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
