@@ -13,22 +13,9 @@ import com.frc2367.stats.Stats;
 public class Main {
 	public static void main(String[] args) {
 		GUI mainWindow = new GUI();
-		Stats chart = new Stats("Test thing", "test");
-		NumberAxis xAxis = new NumberAxis();
-		xAxis.setTickUnit(new NumberTickUnit(1000));
-		xAxis.setRange(0.0, 3000.0);
-
-		NumberAxis yAxis = new NumberAxis();
-		yAxis.setTickUnit(new NumberTickUnit(10));
-		yAxis.setRange(0.0, 200);
-
-		// Assign it to the chart
-		XYPlot plot = (XYPlot) chart.getPlot().getPlot();
-		plot.setDomainAxis(xAxis);
-		plot.setRangeAxis(yAxis);
-		chart.pack();
-		RefineryUtilities.centerFrameOnScreen(chart);
-		chart.setVisible(true);
+		Stats stat = new Stats();
+		mainWindow.setTestScatter(stat.displayChart());
+		mainWindow.setupBasicStatPanel();
 		ArrayList<ScoutedTeam> teams = new ArrayList<ScoutedTeam>();
 		WebApi api = new WebApi("cada", true, teams);
 		api.updateData();

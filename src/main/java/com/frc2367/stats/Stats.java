@@ -5,12 +5,18 @@ import com.frc2367.gui.GUI;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -21,31 +27,17 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 
-public class Stats extends ApplicationFrame {
-
-	private JPanel panel;
+public class Stats {
 	private DefaultXYDataset test = new DefaultXYDataset();
 	private XYSeries series = new XYSeries("2367");
 	private XYSeriesCollection seriesCollection = new XYSeriesCollection();
 	private JFreeChart scatter;
 
-	public Stats(String applicationTitle, String chartTitle) {
-		super(applicationTitle);
-		createSeries();
-		scatter = ChartFactory.createScatterPlot("Team Number vs Score", "Team Number", "Match Score",
-				seriesCollection, PlotOrientation.VERTICAL, true, true, false);
-		ChartPanel chartPanel = new ChartPanel(scatter);
-		chartPanel.setPreferredSize(new java.awt.Dimension(500, 500));
-		XYLineAndShapeRenderer render = new XYLineAndShapeRenderer();
-		render.setSeriesPaint(0, Color.RED);
-		render.setSeriesStroke(0, new BasicStroke(4.0f));
-		XYPlot plot = new XYPlot();
-		plot.setRenderer(render);
-		setContentPane(chartPanel);
+	public Stats() {
 
 	}
-	
-	public JFreeChart getPlot(){
+
+	public JFreeChart getPlot() {
 		return scatter;
 	}
 
@@ -59,6 +51,40 @@ public class Stats extends ApplicationFrame {
 		series.add(2367, 68);
 		series.add(2367, 64);
 		seriesCollection.addSeries(series);
+	}
+
+	public JPanel displayChart() {
+		JPanel panelForReturn = new JPanel();
+		
+		// chart setup
+		createSeries();
+		scatter = ChartFactory.createScatterPlot("Team Number vs Score", "Team Number", "Match Score", seriesCollection,
+				PlotOrientation.VERTICAL, true, true, false);
+		XYLineAndShapeRenderer render = new XYLineAndShapeRenderer();
+		render.setSeriesPaint(0, Color.RED);
+		render.setSeriesStroke(0, new BasicStroke(4.0f));
+		XYPlot plot = new XYPlot();
+
+		// configure axes
+		NumberAxis xAxis = new NumberAxis();
+		xAxis.setTickUnit(new NumberTickUnit(1000));
+		xAxis.setRange(0.0, 3000.0);
+		NumberAxis yAxis = new NumberAxis();
+		yAxis.setTickUnit(new NumberTickUnit(10));
+		yAxis.setRange(0.0, 200);
+		((XYPlot) scatter.getPlot()).setDomainAxis(xAxis);
+		((XYPlot) scatter.getPlot()).setRangeAxis(yAxis);
+
+		// rendering and displaying
+		plot.setRenderer(render);
+		panelForReturn.add(new ChartPanel(scatter));
+		JFrame frame = new JFrame();
+		frame.add(panelForReturn);
+		frame.setSize(800, 500);
+		frame.setVisible(true);
+		
+		
+		return panelForReturn;
 	}
 
 	public double calcExpectedMatchPoints(Alliance a) {

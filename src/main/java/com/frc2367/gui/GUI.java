@@ -203,6 +203,7 @@ public class GUI {
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
 		setupPitData();
+		
 
 		// frame setup
 		mainFrame.add(tabs);
@@ -387,10 +388,20 @@ public class GUI {
 		pitDataInfo.add(br);
 	}
 
-	public void setupTeamInfo(){
-		
+	public void setupTeamInfo() {
+
 	}
-	
+
+	JPanel testScatter;
+
+	public void setTestScatter(JPanel j) {
+		testScatter = j;
+	}
+
+	public void setupBasicStatPanel() {
+		basicStatPanel.add(testScatter);
+	}
+
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	public boolean[] getAutoDefenses() {
 		return autoDefenses;
