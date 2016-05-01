@@ -1,6 +1,6 @@
 package com.frc2367.data.scores;
 
-public class Alliance
+class Alliance
 {
 
 	private String alliance;

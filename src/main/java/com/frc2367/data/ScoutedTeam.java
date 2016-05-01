@@ -1,14 +1,10 @@
 package com.frc2367.data;
 
-import java.util.ArrayList;
-
-import com.frc2367.data.scores.Alliance;
-
 public class ScoutedTeam {
 
 	// Defense Booleans
 	// Underscore denotes autonomous ability
-	private ArrayList<Alliance> allMatches = new ArrayList<Alliance>();
+//private ArrayList<Alliance> allMatches = new ArrayList<Alliance>();
 	// Cat A
 	private boolean port, cdf, port_, cdf_;
 	// Cat B
@@ -296,14 +292,14 @@ public class ScoutedTeam {
 		this.teamNum = teamNum;
 	}
 
-	public ArrayList<Alliance> getAllMatches()
-	{
-		return allMatches;
-	}
-
-	public void setAllMatches(ArrayList<Alliance> allMatches)
-	{
-		this.allMatches = allMatches;
-	}
+//	public ArrayList<Alliance> getAllMatches()
+//	{
+//		return allMatches;
+//	}
+//
+//	public void setAllMatches(ArrayList<Alliance> allMatches)
+//	{
+//		this.allMatches = allMatches;
+//	}
 
 }

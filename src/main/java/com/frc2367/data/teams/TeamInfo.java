@@ -1,57 +1,34 @@
 package com.frc2367.data.teams;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 public class TeamInfo implements Comparable<TeamInfo>
 {
 
-	private String website;
-	private String name;
-	private String locality;
-	
-	@SerializedName("rookie_year")
-	@Expose
-	private int rookieYear;
-	private String region;
-	
-	@SerializedName("team_number")
-	@Expose
-	
 	private int teamNumber;
-	private String location;
-	private String key;
-	private String countryName;
-	private String motto;
-	private String nickname;
-	
-	public TeamInfo()
+	private String nameFull;
+	private String nameShort;
+	private String city;
+	private String stateProv;
+	private String country;
+	private int rookieYear;
+	private String robotName;
+	private String districtCode;
+	private String website;
+
+	public String getTeamNumberAsString()
 	{
+		return Integer.toString(teamNumber);
 	}
 
-	public String getWebsite()
+	public String toString()
 	{
-		return website;
+		return Integer.toString(teamNumber) + " - " + nameShort;
 	}
 
-	public String getName()
+	@Override
+	public int compareTo(TeamInfo arg0)
 	{
-		return name;
-	}
-
-	public String getLocality()
-	{
-		return locality;
-	}
-
-	public int getRookieYear()
-	{
-		return rookieYear;
-	}
-
-	public String getRegion()
-	{
-		return region;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	public int getTeamNumber()
@@ -59,43 +36,49 @@ public class TeamInfo implements Comparable<TeamInfo>
 		return teamNumber;
 	}
 
-	public String getLocation()
+	public String getNameFull()
 	{
-		return location;
+		return nameFull;
 	}
 
-	public String getKey()
+	public String getNameShort()
 	{
-		return key;
+		return nameShort;
 	}
 
-	public String getCountryName()
+	public String getCity()
 	{
-		return countryName;
+		return city;
 	}
 
-	public String getMotto()
+	public String getStateProv()
 	{
-		return motto;
+		return stateProv;
 	}
 
-	public String getNickname()
+	public String getCountry()
 	{
-		return nickname;
+		return country;
 	}
 
-	public String getTeamNumberAsString()
+	public int getRookieYear()
 	{
-		return Integer.toString(teamNumber);
-	}
-	public String toString()
-	{
-		return Integer.toString(teamNumber) + " - "  + nickname;
+		return rookieYear;
 	}
 
-	@Override
-	public int compareTo(TeamInfo arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getRobotName()
+	{
+		return robotName;
 	}
+
+	public String getDistrictCode()
+	{
+		return districtCode;
+	}
+
+	public String getWebsite()
+	{
+		return website;
+	}
+	
 }

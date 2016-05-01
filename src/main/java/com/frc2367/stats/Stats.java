@@ -1,15 +1,9 @@
 package com.frc2367.stats;
 
-import com.frc2367.data.scores.Alliance;
-import com.frc2367.gui.GUI;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -17,15 +11,12 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.ScatterRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 
 public class Stats {
 	private DefaultXYDataset test = new DefaultXYDataset();
@@ -87,10 +78,10 @@ public class Stats {
 		return panelForReturn;
 	}
 
-	public double calcExpectedMatchPoints(Alliance a) {
-
-		return -1;
-	}
+//	public double calcExpectedMatchPoints(Alliance a) {
+//
+//		return -1;
+//	}
 
 	public double stdDevProportion() {
 		return -1;
