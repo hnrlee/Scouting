@@ -42,6 +42,15 @@ public class MatchScore
 	{
 		return alliances;
 	}
+	public Alliance getAlliance(String color)
+	{
+		for(Alliance ally : alliances)
+		{
+			if(ally.getAlliance()==color)
+				return ally;
+		}
+		return null;
+	}
 		
 
 }

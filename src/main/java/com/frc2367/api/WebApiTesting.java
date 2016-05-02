@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 
 import com.frc2367.data.events.Event;
 import com.frc2367.data.events.EventRequest;
+import com.frc2367.data.scores.Alliance;
 import com.frc2367.data.scores.EventMatchRequest;
 import com.frc2367.data.scores.GeneralScore;
 import com.frc2367.data.scores.ScoreDetailRequest;
@@ -62,12 +63,27 @@ public class WebApiTesting
 		getMatches();
 	}
 
-	public void updateData()
+	public ArrayList<FullTeam> updateData()
 	{
-
+		ArrayList<TeamInfo> allTeams = getTeams();
+		ArrayList<GeneralScore> allScores = getMatches();
+		ArrayList<FullTeam> fullTeams = new ArrayList<FullTeam>();
+		for (int i = 0; i < allTeams.size(); i++)
+		{
+			FullTeam team = new FullTeam();
+			int teamNumber = allTeams.get(i).getTeamNumber();
+			team.setInfo(allTeams.get(i));
+			for(GeneralScore score : allScores)
+			{
+				String allianceColor = score.getSimpleScore().getTeamAlliance(teamNumber);
+				Alliance ally = score.getDetailScore().getAlliance(allianceColor);
+				team.addMatch(ally);
+			}
+		}
+		return fullTeams;
 	}
 
-	public void getTeams()// gets all the teams at the main event
+	public ArrayList<TeamInfo> getTeams()// gets all the teams at the main event
 	{
 		ArrayList<TeamInfo> allTeams = new ArrayList<TeamInfo>();
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=1", "teams1", true);
@@ -80,9 +96,10 @@ public class WebApiTesting
 			allTeams.addAll(new Gson().fromJson(json, TeamRequest.class).getTeams());
 		}
 		debug("done getting teams");
+		return allTeams;
 	}
 
-	public void getMatches()// gets info about match of team
+	public ArrayList<GeneralScore> getMatches()// gets info about match of team
 	{
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/events", "events", true);
 		EventRequest events = new Gson().fromJson(json, EventRequest.class);
@@ -97,15 +114,15 @@ public class WebApiTesting
 
 			try
 			{
-			//if(event)
-			for (int i = 0; i < score.getMatchScores().size() && i < eventMatch.getMatches().size(); i++)
-			{
-				allScores.add(new GeneralScore(score.getMatchScores().get(i), eventMatch.getMatches().get(i)));
+				// if(event)
+				for (int i = 0; i < score.getMatchScores().size() && i < eventMatch.getMatches().size(); i++)
+				{
+					allScores.add(new GeneralScore(score.getMatchScores().get(i), eventMatch.getMatches().get(i)));
+				}
 			}
-			}
-			catch(NullPointerException exp)
+			catch (NullPointerException exp)
 			{
-				System.out.println("Error getting "+e.getCode()+" scores");
+				System.out.println("Error getting " + e.getCode() + " scores");
 			}
 
 			level = "playoff";
@@ -116,19 +133,19 @@ public class WebApiTesting
 
 			try
 			{
-			for (int i = 0; i < score.getMatchScores().size() && i < eventMatchPlay.getMatches().size(); i++)
+				for (int i = 0; i < score.getMatchScores().size() && i < eventMatchPlay.getMatches().size(); i++)
+				{
+					allScores.add(new GeneralScore(scorePlay.getMatchScores().get(i), eventMatchPlay.getMatches().get(i)));
+				}
+			}
+			catch (NullPointerException exp)
 			{
-				allScores.add(new GeneralScore(scorePlay.getMatchScores().get(i), eventMatchPlay.getMatches().get(i)));
+				System.out.println("Error getting " + e.getCode() + " scores");
 			}
-			}
-			catch(NullPointerException exp)
-			{
-				System.out.println("Error getting "+e.getCode()+" scores");
-			}
-
 
 		}
 		debug("done getting matches");
+		return allScores;
 	}
 
 	public String makeRequest(String request, String fileName, boolean auth)// handles all the logic for requests
