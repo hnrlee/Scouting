@@ -73,11 +73,14 @@ public class WebApiTesting
 			FullTeam team = new FullTeam();
 			int teamNumber = allTeams.get(i).getTeamNumber();
 			team.setInfo(allTeams.get(i));
-			for(GeneralScore score : allScores)
+			for (GeneralScore score : allScores)
 			{
 				String allianceColor = score.getSimpleScore().getTeamAlliance(teamNumber);
-				Alliance ally = score.getDetailScore().getAlliance(allianceColor);
-				team.addMatch(ally);
+				if (allianceColor != null)
+				{
+					Alliance ally = score.getDetailScore().getAlliance(allianceColor);
+					team.addMatch(ally);
+				}
 			}
 		}
 		return fullTeams;
