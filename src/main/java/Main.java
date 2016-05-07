@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import com.frc2367.api.FullTeam;
 import com.frc2367.api.WebApiTesting;
 import com.frc2367.data.ScoutedTeam;
 import com.frc2367.gui.GUI;
@@ -14,6 +15,9 @@ public class Main {
 		ArrayList<ScoutedTeam> teams = new ArrayList<ScoutedTeam>();
 		WebApiTesting api = new WebApiTesting(true);
 		api.updateData();
+		ArrayList<FullTeam> arrTest = api.updateData();
+		System.out.println(api.updateData().get(10).getTeamNumber());
+		//System.out.println("asdf");
 
 	}
 }
