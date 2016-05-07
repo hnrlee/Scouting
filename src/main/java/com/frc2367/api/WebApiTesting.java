@@ -78,10 +78,17 @@ public class WebApiTesting
 				String allianceColor = score.getSimpleScore().getTeamAlliance(teamNumber);
 				if (allianceColor != null)
 				{
+					debug("found team " + teamNumber + " in match " + score.getSimpleScore().getNumber());
 					Alliance ally = score.getDetailScore().getAlliance(allianceColor);
-					team.addMatch(ally);
+					if (ally != null)
+					{
+						debug("added match for team " + teamNumber);
+						team.addMatch(ally);
+					}
+
 				}
 			}
+			fullTeams.add(team);
 		}
 		return fullTeams;
 	}
@@ -224,10 +231,10 @@ public class WebApiTesting
 	{
 		Calendar cal = Calendar.getInstance();
 		if (debugLevel == 1)
-			logFile.println(cal + ":------: " + msg);
+			logFile.println(msg);
 		else if (debugLevel == 2)
 		{
-			logFile.println(cal + ":------: " + msg);
+			logFile.println(msg);
 			System.out.println(msg);
 		}
 

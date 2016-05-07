@@ -14,10 +14,10 @@ public class Main {
 		mainWindow.setupBasicStatPanel();
 		ArrayList<ScoutedTeam> teams = new ArrayList<ScoutedTeam>();
 		WebApiTesting api = new WebApiTesting(true);
-		api.updateData();
+		//api.updateData();
 		ArrayList<FullTeam> arrTest = api.updateData();
-		System.out.println(api.updateData().get(10).getTeamNumber());
-		//System.out.println("asdf");
+		//System.out.println(api.updateData().get(10).getTeamNumber());
+		System.out.println("asdf");
 
 	}
 }

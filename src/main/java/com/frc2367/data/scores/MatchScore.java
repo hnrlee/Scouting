@@ -46,7 +46,7 @@ public class MatchScore
 	{
 		for(Alliance ally : alliances)
 		{
-			if(ally.getAlliance()==color)
+			if(ally.getAlliance().toLowerCase().equals(color))
 				return ally;
 		}
 		return null;

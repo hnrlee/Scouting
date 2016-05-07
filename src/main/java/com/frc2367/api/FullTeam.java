@@ -17,9 +17,14 @@ public class FullTeam implements Comparable<FullTeam>
 	private String robotName;
 	private String districtCode;
 	private String website;
-	
 	private ArrayList<Alliance> teamScores;
 
+	
+	public FullTeam()
+	{
+		teamScores = new ArrayList<Alliance>();
+	}
+	
 	public void setInfo(TeamInfo info)
 	{
 		this.teamNumber = info.getTeamNumber();
