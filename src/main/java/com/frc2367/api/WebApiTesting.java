@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
+import javax.swing.ProgressMonitor;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -62,12 +63,14 @@ public class WebApiTesting
 		getTeams();
 		getMatches();
 	}
-
+	
 	public ArrayList<FullTeam> updateData()
 	{
 		ArrayList<TeamInfo> allTeams = getTeams();
 		ArrayList<GeneralScore> allScores = getMatches();
 		ArrayList<FullTeam> fullTeams = new ArrayList<FullTeam>();
+		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Parsing data","", 0, allTeams.size()*allScores.size());
+		int p=0;
 		for (int i = 0; i < allTeams.size(); i++)
 		{
 			FullTeam team = new FullTeam();
@@ -87,9 +90,12 @@ public class WebApiTesting
 					}
 
 				}
+				progressMonitor.setProgress(p);
+				p+=1;
 			}
 			fullTeams.add(team);
 		}
+		progressMonitor.close();
 		return fullTeams;
 	}
 
@@ -99,12 +105,15 @@ public class WebApiTesting
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=1", "teams1", true);
 		TeamRequest teams = new Gson().fromJson(json, TeamRequest.class);
 		int numPages = teams.getPageTotal();
+		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Updating teams","", 0, numPages);
 		allTeams.addAll(teams.getTeams());
 		for (int i = 2; i <= numPages; i++)
 		{
 			json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=1", "teams" + i, true);
 			allTeams.addAll(new Gson().fromJson(json, TeamRequest.class).getTeams());
+			progressMonitor.setProgress(i);
 		}
+		progressMonitor.close();
 		debug("done getting teams");
 		return allTeams;
 	}
@@ -114,6 +123,8 @@ public class WebApiTesting
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/events", "events", true);
 		EventRequest events = new Gson().fromJson(json, EventRequest.class);
 		ArrayList<GeneralScore> allScores = new ArrayList<GeneralScore>();
+		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Updating matches","", 0, events.getEvents().size()*4);
+		int q = 0;
 		for (Event e : events.getEvents())
 		{
 			String level = "qual";
@@ -134,7 +145,8 @@ public class WebApiTesting
 			{
 				System.out.println("Error getting " + e.getCode() + " scores");
 			}
-
+			progressMonitor.setProgress(q);
+			q+=2;
 			level = "playoff";
 			json2 = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + e.getCode() + "/" + level, e.getCode() + "-" + level + "-details", true);
 			ScoreDetailRequest scorePlay = new Gson().fromJson(json2, ScoreDetailRequest.class);
@@ -152,9 +164,12 @@ public class WebApiTesting
 			{
 				System.out.println("Error getting " + e.getCode() + " scores");
 			}
+			progressMonitor.setProgress(q);
+			q+=2;
 
 		}
 		debug("done getting matches");
+		progressMonitor.close();
 		return allScores;
 	}
 
