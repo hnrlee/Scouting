@@ -61,8 +61,6 @@ public class WebApiTesting
 		}
 		apiKey = scan.nextLine();
 		this.forceNoUpdate = forceNoUpdate;
-		getTeams();
-		getMatches();
 	}
 
 	public ArrayList<FullTeam> updateData()
