@@ -203,7 +203,6 @@ public class GUI {
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
 		setupPitData();
-		
 
 		// frame setup
 		mainFrame.add(tabs);
