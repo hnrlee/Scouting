@@ -29,7 +29,8 @@ public class Stats {
 	private WebApiTesting api = new WebApiTesting(true);
 	private ArrayList<FullTeam> arr = api.updateData();
 	private XYSeries[] bigTest = new XYSeries[arr.size()];
-	private int xAxisData;
+	private ArrayList<Integer> totalPoints;
+	private int xMax = 0, xMin = 0, yMax = 0, yMin = 0;
 
 	public Stats() {
 
@@ -40,18 +41,30 @@ public class Stats {
 	}
 
 	public void createSeries() {
-		int xMax,xMin, yMax, yMin;
+
+		int xVal, yVal = 0;
 
 		for (int i = 0; i < arr.size(); i++) {
 			bigTest[i] = new XYSeries(arr.get(i).getTeamNumberAsString());
 			for (int j = 0; j < arr.get(i).getTeamScores().size(); j++) {
-				try {
-					//bigTest[i].add(arr.get(i).getTeamNumber(), arr.get(i).getTeamScores().get(j).getTotalPoints());
-					
-					bigTest[i].add(arr.get(i).getTeamScores().get(j).getAutoPoints(), arr.get(i).getTeamScores().get(j).getTotalPoints());
-				} catch (Exception e) {
-					System.out.println("ayylmao");
+				xVal = arr.get(i).getTeamScores().get(j).getBreachPoints();
+				yVal = arr.get(i).getTeamScores().get(j).getTotalPoints();
+				bigTest[i].add(xVal, yVal);
+
+				if (i == 0 && j == 0) {
+					xMin = xVal;
+					xMax = xVal;
+					yMin = yVal;
+					yMin = yVal;
 				}
+
+				if (xVal > xMax)
+					xMax = xVal;
+				if (yVal > yMax)
+					yMax = yVal;
+
+				// bigTest[i].add(arr.get(i).getTeamScores().get(j).getAutoPoints(),
+				// arr.get(i).getTeamScores().get(j).getTotalPoints());
 			}
 			seriesCollection.addSeries(bigTest[i]);
 		}
@@ -70,6 +83,9 @@ public class Stats {
 	}
 
 	public JPanel displayChart() {
+
+		int xTickUnit = 0, yTickUnit = 0;
+
 		JPanel panelForReturn = new JPanel();
 
 		// chart setup
@@ -81,11 +97,43 @@ public class Stats {
 
 		// configure axes
 		NumberAxis xAxis = new NumberAxis();
-		xAxis.setTickUnit(new NumberTickUnit(1000));
-		xAxis.setRange(0.0, 6000.0);
+
+		if (xMin < 6)
+			xMin = 0;
+		else
+			xMin -= 5;
+		if (xMax - xMin < 10)
+			xTickUnit = 2;
+		else if (xMax - xMin < 50)
+			xTickUnit = 10;
+		else if (xMax - xMin < 500)
+			xTickUnit = 20;
+		else if (xMax - xMin < 1000)
+			xTickUnit = 100;
+		else if (xMax - xMin < 10000)
+			xTickUnit = 500;
+
+		xAxis.setTickUnit(new NumberTickUnit(xTickUnit));
+		xAxis.setRange(xMin, xMax + 5);
 		NumberAxis yAxis = new NumberAxis();
-		yAxis.setTickUnit(new NumberTickUnit(20));
-		yAxis.setRange(0.0, 300);
+		yAxis.setTickUnit(new NumberTickUnit(yTickUnit));
+		if (yMin < 6)
+			yMin = 0;
+		else
+			yMin -= 5;
+
+		if (yMax - yMin < 10)
+			yTickUnit = 2;
+		else if (yMax - yMin < 50)
+			yTickUnit = 10;
+		else if (yMax - yMin < 500)
+			yTickUnit = 20;
+		else if (yMax - yMin < 1000)
+			yTickUnit = 100;
+		else if (yMax - yMin < 10000)
+			yTickUnit = 500;
+
+		yAxis.setRange(yMin, yMax + 5);
 		((XYPlot) scatter.getPlot()).setDomainAxis(xAxis);
 		((XYPlot) scatter.getPlot()).setRangeAxis(yAxis);
 
