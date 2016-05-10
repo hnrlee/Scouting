@@ -26,6 +26,7 @@ import com.frc2367.data.scores.ScoreDetailRequest;
 import com.frc2367.data.teams.TeamInfo;
 import com.frc2367.data.teams.TeamRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -63,14 +64,14 @@ public class WebApiTesting
 		getTeams();
 		getMatches();
 	}
-	
+
 	public ArrayList<FullTeam> updateData()
 	{
 		ArrayList<TeamInfo> allTeams = getTeams();
 		ArrayList<GeneralScore> allScores = getMatches();
 		ArrayList<FullTeam> fullTeams = new ArrayList<FullTeam>();
-		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Parsing data","", 0, allTeams.size()*allScores.size());
-		int p=0;
+		ProgressMonitor progressMonitor = new ProgressMonitor(null, "Parsing data", "", 0, allTeams.size() * allScores.size());
+		int p = 0;
 		for (int i = 0; i < allTeams.size(); i++)
 		{
 			FullTeam team = new FullTeam();
@@ -81,17 +82,18 @@ public class WebApiTesting
 				String allianceColor = score.getSimpleScore().getTeamAlliance(teamNumber);
 				if (allianceColor != null)
 				{
-					debug("found team " + teamNumber + " in match " + score.getSimpleScore().getNumber());
+					debug("found team " + teamNumber + " in match " + score.getSimpleScore().getDescription());
 					Alliance ally = score.getDetailScore().getAlliance(allianceColor);
 					if (ally != null)
 					{
-						debug("added match for team " + teamNumber);
+						progressMonitor.setNote("added match for team " + teamNumber);
+						// debug("added match for team " + teamNumber);
 						team.addMatch(ally);
 					}
 
 				}
 				progressMonitor.setProgress(p);
-				p+=1;
+				p += 1;
 			}
 			fullTeams.add(team);
 		}
@@ -105,11 +107,11 @@ public class WebApiTesting
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=1", "teams1", true);
 		TeamRequest teams = new Gson().fromJson(json, TeamRequest.class);
 		int numPages = teams.getPageTotal();
-		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Updating teams","", 0, numPages);
+		ProgressMonitor progressMonitor = new ProgressMonitor(null, "Updating teams", "", 0, numPages);
 		allTeams.addAll(teams.getTeams());
 		for (int i = 2; i <= numPages; i++)
 		{
-			json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=1", "teams" + i, true);
+			json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/teams?page=" + i, "teams" + i, true);
 			allTeams.addAll(new Gson().fromJson(json, TeamRequest.class).getTeams());
 			progressMonitor.setProgress(i);
 		}
@@ -123,15 +125,33 @@ public class WebApiTesting
 		String json = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/events", "events", true);
 		EventRequest events = new Gson().fromJson(json, EventRequest.class);
 		ArrayList<GeneralScore> allScores = new ArrayList<GeneralScore>();
-		ProgressMonitor progressMonitor = new ProgressMonitor(null,"Updating matches","", 0, events.getEvents().size()*4);
+		ProgressMonitor progressMonitor = new ProgressMonitor(null, "Updating matches", "", 0, events.getEvents().size() * 4);
 		int q = 0;
 		for (Event e : events.getEvents())
 		{
 			String level = "qual";
 			String json2 = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + e.getCode() + "/" + level, e.getCode() + "-" + level + "-details", true);
-			ScoreDetailRequest score = new Gson().fromJson(json2, ScoreDetailRequest.class);
+			ScoreDetailRequest score = null;
+			try
+			{
+				score = new Gson().fromJson(json2, ScoreDetailRequest.class);
+			}
+			catch (JsonSyntaxException e1)
+			{
+				System.out.println(json2);
+				e1.printStackTrace();
+			}
 			json2 = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/matches/" + e.getCode() + "?tournamentLevel=" + level, e.getCode() + "-" + level + "-matches", true);
-			EventMatchRequest eventMatch = new Gson().fromJson(json2, EventMatchRequest.class);
+			EventMatchRequest eventMatch = null;
+			try
+			{
+				eventMatch = new Gson().fromJson(json2, EventMatchRequest.class);
+			}
+			catch (JsonSyntaxException e1)
+			{
+				System.out.println(json2);
+				e1.printStackTrace();
+			}
 
 			try
 			{
@@ -146,12 +166,30 @@ public class WebApiTesting
 				System.out.println("Error getting " + e.getCode() + " scores");
 			}
 			progressMonitor.setProgress(q);
-			q+=2;
+			q += 2;
 			level = "playoff";
 			json2 = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/scores/" + e.getCode() + "/" + level, e.getCode() + "-" + level + "-details", true);
-			ScoreDetailRequest scorePlay = new Gson().fromJson(json2, ScoreDetailRequest.class);
+			ScoreDetailRequest scorePlay = null;
+			try
+			{
+				scorePlay = new Gson().fromJson(json2, ScoreDetailRequest.class);
+			}
+			catch (JsonSyntaxException e1)
+			{
+				System.out.println(json2);
+				e1.printStackTrace();
+			}
 			json2 = this.makeRequest("https://frc-api.firstinspires.org/v2.0/2016/matches/" + e.getCode() + "?tournamentLevel=" + level, e.getCode() + "-" + level + "-matches", true);
-			EventMatchRequest eventMatchPlay = new Gson().fromJson(json2, EventMatchRequest.class);
+			EventMatchRequest eventMatchPlay = null;
+			try
+			{
+				eventMatchPlay = new Gson().fromJson(json2, EventMatchRequest.class);
+			}
+			catch (JsonSyntaxException e1)
+			{
+				System.out.println(json2);
+				e1.printStackTrace();
+			}
 
 			try
 			{
@@ -165,7 +203,7 @@ public class WebApiTesting
 				System.out.println("Error getting " + e.getCode() + " scores");
 			}
 			progressMonitor.setProgress(q);
-			q+=2;
+			q += 2;
 
 		}
 		debug("done getting matches");
@@ -179,7 +217,7 @@ public class WebApiTesting
 		Client client = ClientBuilder.newClient();
 		Response response = null;
 		String body = null;
-		if (!forceNoUpdate && (!f.exists() && !f.isDirectory()))
+		if (!f.exists() && !f.isDirectory())
 		{
 			System.out.println("No files, grabing new response");
 			if (auth)
@@ -207,7 +245,7 @@ public class WebApiTesting
 				e.printStackTrace();
 			}
 		}
-		if (!forceNoUpdate && response.getStatus() == 200)// successful
+		if ((!forceNoUpdate && response.getStatus() == 200))// successful
 		{
 			body = response.readEntity(String.class);
 			debug("Got new data");
@@ -227,7 +265,7 @@ public class WebApiTesting
 				debug("Error writing to file");
 			}
 		}
-		else if (forceNoUpdate || response.getStatus() == 304)// no new data
+		else if ((forceNoUpdate || response.getStatus() == 304) && f.exists())// no new data
 		{
 			System.out.println("No new data, using old data");
 			try
@@ -239,6 +277,7 @@ public class WebApiTesting
 				e.printStackTrace();
 			}
 		}
+		//System.out.println(response.getStatus());
 		return body;
 	}
 
