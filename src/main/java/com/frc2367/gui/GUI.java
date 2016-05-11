@@ -275,7 +275,11 @@ public class GUI
 
 		t.start();
 		stats = new Stats();
+		setupTeamInfo();
+
+
 		setupTrends();
+
 
 	}
 
@@ -460,7 +464,58 @@ public class GUI
 	
 	public void setupTeamInfo()
 	{
+		
+		JLabel teamNumLabel = new JLabel("team number");
+		JLabel aveScoreLabel = new JLabel("average score");
+		JLabel aveAutoScoreLabel = new JLabel("average auto score");
+		JLabel aveTeleopScoreLabel = new JLabel("average teleop score");
+		JLabel breachPercentLabel = new JLabel("Breach %");
+		JLabel capPercentLabel = new JLabel("Capture %");
+		
+		
+		final JTextField teamSelection = new JTextField(0);
+		final JLabel aveScore = new JLabel("0");
+		final JLabel aveAutoScore = new JLabel("0");
+		final JLabel aveTeleop = new JLabel("0");
+		final JLabel breach= new JLabel("0");
+		final JLabel cap = new JLabel("0");
+		
+		basicStatPanel.add(teamNumLabel);
+		basicStatPanel.add(teamSelection);
+		basicStatPanel.add(aveScoreLabel);
+		basicStatPanel.add(aveScore);
+		basicStatPanel.add(aveAutoScoreLabel);
+		basicStatPanel.add(aveAutoScore);
+		basicStatPanel.add(aveTeleopScoreLabel);
+		basicStatPanel.add(aveTeleop);
+		basicStatPanel.add(breachPercentLabel);
+		basicStatPanel.add(breach);
+		basicStatPanel.add(capPercentLabel);
+		basicStatPanel.add(cap);
+		
+		class StatListener implements ActionListener
+		{
 
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String teamNumStr = teamSelection.getText();
+				int teamNum = Integer.parseInt(teamNumStr);
+				if(stats.validateTeamNum(teamNum))
+				{
+					aveScore.setText(String.valueOf(stats.getAverageScore(teamNum)));
+					aveAutoScore.setText(String.valueOf(stats.getAverageAutoScore(teamNum)));
+					aveTeleop.setText(String.valueOf(stats.getAverageTeleopScore(teamNum)));
+					breach.setText(String.valueOf(stats.getBreachPercent(teamNum)));
+					cap.setText(String.valueOf(stats.getCapturePercent(teamNum)));
+				}
+			}
+			
+		}
+		
+		StatListener sl = new StatListener();
+		teamSelection.addActionListener(sl);
+		
 	}
 
 
