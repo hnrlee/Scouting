@@ -70,7 +70,7 @@ public class GUI {
 	private JTabbedPane tabs = new JTabbedPane();
 	private JPanel pitData = new JPanel(new BorderLayout());
 	private JPanel pitDataInfo = new JPanel(new GridLayout(2, 2));
-	private JPanel scoutedTeamDataPanel = new JPanel(new GridLayout(2, 2));
+	private JPanel scoutedTeamDataPanel = new JPanel(new GridLayout(8, 1));
 	private JPanel basicStatPanel = new JPanel(new GridLayout(8, 2));
 	private ImageIcon pitDataIcon = new ImageIcon("Icons/FIRST Logo.gif");
 	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
@@ -490,8 +490,11 @@ public class GUI {
 		JLabel teamNumLabel = new JLabel("team number");
 		final JTextField teamSelection = new JTextField(0);
 
-		scoutedTeamDataPanel.add(teamNumLabel);
-		scoutedTeamDataPanel.add(teamSelection);
+		JPanel teamNum = new JPanel(new GridLayout(1, 2));
+		teamNum.add(teamNumLabel);
+		teamNum.add(teamSelection);
+
+		scoutedTeamDataPanel.add(teamNum);
 
 		class DataListener implements ActionListener {
 
@@ -504,6 +507,24 @@ public class GUI {
 		}
 		DataListener dl = new DataListener();
 		teamSelection.addActionListener(dl);
+
+		JLabel robotName, speed1, speed2, note, teleHigh, teleLow, teamName;
+
+		robotName = new JLabel("Robot Name: ");
+		speed1 = new JLabel("Speed 1: ");
+		speed2 = new JLabel("Speed 2 (if applicable): ");
+		note = new JLabel("Note: ");
+		teleHigh = new JLabel("Can Teleop High?: ");
+		teleLow = new JLabel("Can Teleop Low? ");
+		teamName = new JLabel("Team Name: ");
+
+		scoutedTeamDataPanel.add(robotName);
+		scoutedTeamDataPanel.add(teamName);
+		scoutedTeamDataPanel.add(speed1);
+		scoutedTeamDataPanel.add(speed2);
+		scoutedTeamDataPanel.add(teleHigh);
+		scoutedTeamDataPanel.add(teleLow);
+		scoutedTeamDataPanel.add(note);
 
 	}
 
