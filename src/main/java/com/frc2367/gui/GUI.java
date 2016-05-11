@@ -21,6 +21,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import com.frc2367.stats.Stats;
@@ -448,8 +449,8 @@ public class GUI
 	{
 		JPanel topComboBoxes = new JPanel(new GridLayout(2,2));
 		overallTrends.add(topComboBoxes,BorderLayout.NORTH);
-		topComboBoxes.add(new JLabel("x-axis"));
-		topComboBoxes.add(new JLabel("y-axis"));
+		topComboBoxes.add(new JLabel("x-axis",SwingConstants.CENTER));
+		topComboBoxes.add(new JLabel("y-axis",SwingConstants.CENTER));
 		topComboBoxes.add(xAxisBox);
 		topComboBoxes.add(yAxisBox);
 		overallTrends.add(stats.displayChart(18, 2));
