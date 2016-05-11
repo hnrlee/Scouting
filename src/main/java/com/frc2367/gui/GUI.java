@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -26,8 +27,7 @@ import javax.swing.Timer;
 
 import com.frc2367.stats.Stats;
 
-public class GUI
-{
+public class GUI {
 	public final static int numberOfDefenses = 9;
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	private JCheckBoxMenuItem[] autoChecks = new JCheckBoxMenuItem[numberOfDefenses];
@@ -47,6 +47,8 @@ public class GUI
 	private JLabel teamNameLabel = new JLabel("Team Name");
 	private JTextField teamNameField = new JTextField("null");
 	private JTextArea noteArea = new JTextArea();
+
+	private ArrayList<PitTeam> pitTeams = new ArrayList<PitTeam>();
 
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	private boolean[] autoDefenses = new boolean[numberOfDefenses];
@@ -76,65 +78,62 @@ public class GUI
 	private ImageIcon overallTrendsPanelIcon = new ImageIcon("Icons/graph.png");
 	private boolean isFullscreen = false;
 	final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-	final JFrame mainFrame = new JFrame("Robot Scoutr");
+	final JFrame mainFrame = new JFrame("Scoutr");
 	private JButton submitButton = new JButton("Submit");
 
 	private Timer t;
 
 	// stats graphs
 	private Stats stats;
-	private JComboBox<String> xAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points", "foul points", "total points", "rookie year", "team number" });
-	private JComboBox<String> yAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points", "foul points", "total points", "rookie year", "team number" });
+	private JComboBox<String> xAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high",
+			"teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count",
+			"auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points",
+			"teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points",
+			"foul points", "total points", "rookie year", "team number" });
+	private JComboBox<String> yAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high",
+			"teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count",
+			"auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points",
+			"teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points",
+			"foul points", "total points", "rookie year", "team number" });
 
 	private JPanel overallTrends = new JPanel(new BorderLayout());
 
-	class GeneralListener implements KeyListener, ActionListener
-	{
+	class GeneralListener implements KeyListener, ActionListener {
 
 		boolean ctrl = false;
 
 		@Override
-		public void keyTyped(KeyEvent e)
-		{
+		public void keyTyped(KeyEvent e) {
 			// Unused
 
 		}
 
 		@Override
-		public void keyPressed(KeyEvent e)
-		{
+		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_CONTROL)
 				ctrl = true;
-			if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1)
-			{
+			if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
 				if (ctrl)
 					tabs.setSelectedIndex(0);
 			}
-			if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2)
-			{
+			if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
 				if (ctrl)
 					tabs.setSelectedIndex(1);
 			}
-			if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3)
-			{
+			if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
 				if (ctrl)
 					tabs.setSelectedIndex(2);
 			}
-			if (e.getKeyCode() == KeyEvent.VK_F)
-			{
-				if (ctrl && !isFullscreen)
-				{
+			if (e.getKeyCode() == KeyEvent.VK_F) {
+				if (ctrl && !isFullscreen) {
 					device.setFullScreenWindow(mainFrame);
 					isFullscreen = true;
-				}
-				else if (ctrl && isFullscreen)
-				{
+				} else if (ctrl && isFullscreen) {
 					device.setFullScreenWindow(null);
 					isFullscreen = false;
 				}
 			}
-			if (e.getKeyCode() == KeyEvent.VK_SPACE)
-			{
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				if (ctrl)
 					if (tabs.getSelectedIndex() < 3)
 						tabs.setSelectedIndex(tabs.getSelectedIndex() + 1);
@@ -145,38 +144,30 @@ public class GUI
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e)
-		{
+		public void keyReleased(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_CONTROL)
 				ctrl = false;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			if (e.getSource() == t)
-			{
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == t) {
 				notes = noteArea.getText();
-			}
-			else
-			{
+			} else {
 
 				// getting defense capabilities
-				for (int i = 0; i < numberOfDefenses; i++)
-				{
+				for (int i = 0; i < numberOfDefenses; i++) {
 					autoDefenses[i] = autoChecks[i].isSelected();
 					teleDefenses[i] = teleChecks[i].isSelected();
 				}
 
 				// getting auto shooter capabilities
-				for (int i = 0; i < autoBalls.length; i++)
-				{
+				for (int i = 0; i < autoBalls.length; i++) {
 					if (autoBalls[i].isSelected())
 						autoShooter = i;
 				}
 				// reach, cross defense in auto
-				for (int i = 0; i < autoCapabilities.length; i++)
-				{
+				for (int i = 0; i < autoCapabilities.length; i++) {
 					if (autoCapabilities[i].isSelected())
 						autoDefenseReach = i;
 				}
@@ -188,49 +179,46 @@ public class GUI
 					teleHigh = true;
 
 				// tower attack capability
-				for (int i = 0; i < towerAttack.length; i++)
-				{
+				for (int i = 0; i < towerAttack.length; i++) {
 					if (towerAttack[i].isSelected())
 						towerAttackCapability = i;
 				}
 
 				// team number and other string info
-				try
-				{
+				try {
 					teamNumber = Integer.parseInt(teamNumberField.getText());
 
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					teamNumberField.setText("INVALID");
 				}
-				try
-				{
+				try {
 					speed1 = Double.parseDouble(speed1Field.getText());
 					speed2 = Double.parseDouble(speed2Field.getText());
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					speed1Field.setText("INVALID");
 					speed2Field.setText("INVALID");
 				}
 				robotName = robotNameField.getText();
 				teamName = teamNameField.getText();
 
+				pitTeams.add(new PitTeam(getAutoDefenses(), getTeleDefenses(), getTeleHigh(), getTeleLow(),
+						getAutoShooter(), getAutoDefenseReach(), getTowerAttackCapability(), getSpeed1(), getSpeed2(),
+						getRobotName(), getTeamNumber(), getTeamName(), getNotes()));
+
 			}
 		}
 
 	}
 
-	public GUI()
-	{
+	public GUI() {
 
 		// Tab setup
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
-		tabs.addTab("Individual Team Data", scoutedTeamDataIcon, scoutedTeamDataPanel, "See data about an individual team here.");
+		tabs.addTab("Individual Team Data", scoutedTeamDataIcon, scoutedTeamDataPanel,
+				"See data about an individual team here.");
 		tabs.setMnemonicAt(1, KeyEvent.VK_2);
-		tabs.addTab("Individual Team Statistics", basicStatPanelIcon, basicStatPanel, "See stats about an individual team here.");
+		tabs.addTab("Individual Team Stats", basicStatPanelIcon, basicStatPanel, "See Team Stats");
 		tabs.setMnemonicAt(2, KeyEvent.VK_3);
 		tabs.addTab("Overall Trends", overallTrendsPanelIcon, overallTrends, "See the overall trends here");
 		tabs.setMnemonicAt(3, KeyEvent.VK_4);
@@ -249,15 +237,13 @@ public class GUI
 		GeneralListener gl = new GeneralListener();
 		t = new Timer(1000, gl);
 
-		for (int i = 0; i < autoChecks.length; i++)
-		{
+		for (int i = 0; i < autoChecks.length; i++) {
 			autoChecks[i].addActionListener(gl);
 			teleChecks[i].addActionListener(gl);
 		}
 		for (int i = 0; i < autoBalls.length; i++)
 			autoBalls[i].addActionListener(gl);
-		for (int i = 0; i < autoCapabilities.length; i++)
-		{
+		for (int i = 0; i < autoCapabilities.length; i++) {
 			autoCapabilities[i].addActionListener(gl);
 			towerAttack[i].addActionListener(gl);
 		}
@@ -279,18 +265,15 @@ public class GUI
 
 	}
 
-	public void setupPitData()
-	{
+	public void setupPitData() {
 		pitData.add(pitDataInfo, BorderLayout.CENTER);
 		pitData.add(submitButton, BorderLayout.SOUTH);
 		// top left, defenses (auto and tele)
 		JPanel tl = new JPanel(new GridLayout(numberOfDefenses + 1, 2));
 		tl.add(new JLabel("Autonomous"));
 		tl.add(new JLabel("Teleoperated"));
-		for (int i = 0; i < autoChecks.length; i++)
-		{
-			switch (i)
-			{
+		for (int i = 0; i < autoChecks.length; i++) {
+			switch (i) {
 			case 0:
 				autoChecks[i] = new JCheckBoxMenuItem("Portcullis", new ImageIcon("Icons/portcullis.png"));
 				teleChecks[i] = new JCheckBoxMenuItem("Portcullis", new ImageIcon("Icons/portcullis.png"));
@@ -364,8 +347,7 @@ public class GUI
 		autoBalls[3] = new JRadioButtonMenuItem("1 Low and 1 High");
 		autoBalls[4] = new JRadioButtonMenuItem("2 Low Goals");
 		autoBalls[5] = new JRadioButtonMenuItem("2 High Goals");
-		for (int i = 0; i < autoBalls.length; i++)
-		{
+		for (int i = 0; i < autoBalls.length; i++) {
 			autoBallGroup.add(autoBalls[i]);
 			autoBallGroupPanel.add(autoBalls[i]);
 		}
@@ -380,8 +362,7 @@ public class GUI
 		autoCapabilities[1] = new JRadioButtonMenuItem("Reach defense");
 		autoCapabilities[2] = new JRadioButtonMenuItem("Cross Defense");
 		trRightSide.add(new JLabel("Autonomous Capabilities"));
-		for (int i = 0; i < autoCapabilities.length; i++)
-		{
+		for (int i = 0; i < autoCapabilities.length; i++) {
 			autoCapabilitiesGroup.add(autoCapabilities[i]);
 			trRightSide.add(autoCapabilities[i]);
 		}
@@ -391,8 +372,7 @@ public class GUI
 		teleCapabilities[0] = new JCheckBoxMenuItem("Low Goal");
 		teleCapabilities[1] = new JCheckBoxMenuItem("High Goal");
 		trRightSide.add(new JLabel("Teleop Capabilities"));
-		for (int i = 0; i < teleCapabilities.length; i++)
-		{
+		for (int i = 0; i < teleCapabilities.length; i++) {
 			trRightSide.add(teleCapabilities[i]);
 		}
 
@@ -403,8 +383,7 @@ public class GUI
 		towerAttack[1] = new JRadioButtonMenuItem("Can Challenge");
 		towerAttack[2] = new JRadioButtonMenuItem("Can Scale");
 		trRightSide.add(new JLabel("Tower Attack Capabilities"));
-		for (int i = 0; i < towerAttack.length; i++)
-		{
+		for (int i = 0; i < towerAttack.length; i++) {
 			towerAttackGroup.add(towerAttack[i]);
 			trRightSide.add(towerAttack[i]);
 		}
@@ -434,8 +413,7 @@ public class GUI
 		pitDataInfo.add(br);
 	}
 
-	public void setupTrends()
-	{
+	public void setupTrends() {
 		JPanel topComboBoxes = new JPanel(new GridLayout(2, 2));
 		overallTrends.add(topComboBoxes, BorderLayout.NORTH);
 		topComboBoxes.add(new JLabel("x-axis", SwingConstants.CENTER));
@@ -443,12 +421,11 @@ public class GUI
 		topComboBoxes.add(xAxisBox);
 		topComboBoxes.add(yAxisBox);
 		overallTrends.add(stats.displayChart(18, 17));
-		class TeamListener implements ActionListener
-		{
+		class TeamListener implements ActionListener {
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
+				overallTrends.remove(1);
 				overallTrends.add(stats.displayChart(xAxisBox.getSelectedIndex(), yAxisBox.getSelectedIndex()));
 			}
 
@@ -458,8 +435,7 @@ public class GUI
 		yAxisBox.addActionListener(tl);
 	}
 
-	public void setupTeamStats()
-	{
+	public void setupTeamStats() {
 
 		JLabel teamNumLabel = new JLabel("team number");
 		JLabel aveScoreLabel = new JLabel("average score");
@@ -488,16 +464,13 @@ public class GUI
 		basicStatPanel.add(capPercentLabel);
 		basicStatPanel.add(cap);
 
-		class StatListener implements ActionListener
-		{
+		class StatListener implements ActionListener {
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				String teamNumStr = teamSelection.getText();
 				int teamNum = Integer.parseInt(teamNumStr);
-				if (stats.validateTeamNum(teamNum))
-				{
+				if (stats.validateTeamNum(teamNum)) {
 					aveScore.setText(String.valueOf(stats.getAverageScore(teamNum)));
 					aveAutoScore.setText(String.valueOf(stats.getAverageAutoScore(teamNum)));
 					aveTeleop.setText(String.valueOf(stats.getAverageTeleopScore(teamNum)));
@@ -513,20 +486,17 @@ public class GUI
 
 	}
 
-	public void setupScoutedTeamData()
-	{
+	public void setupScoutedTeamData() {
 		JLabel teamNumLabel = new JLabel("team number");
 		final JTextField teamSelection = new JTextField(0);
 
 		scoutedTeamDataPanel.add(teamNumLabel);
 		scoutedTeamDataPanel.add(teamSelection);
 
-		class DataListener implements ActionListener
-		{
+		class DataListener implements ActionListener {
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				String teamNumStr = teamSelection.getText();
 				int teamNum = Integer.parseInt(teamNumStr);
 			}
@@ -538,68 +508,55 @@ public class GUI
 	}
 
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
-	public boolean[] getAutoDefenses()
-	{
+	public boolean[] getAutoDefenses() {
 		return autoDefenses;
 	}
 
-	public boolean[] getTeleDefenses()
-	{
+	public boolean[] getTeleDefenses() {
 		return teleDefenses;
 	}
 
-	public boolean getTeleHigh()
-	{
+	public boolean getTeleHigh() {
 		return teleHigh;
 	}
 
-	public boolean getTeleLow()
-	{
+	public boolean getTeleLow() {
 		return teleLow;
 	}
 
-	public int getAutoShooter()
-	{
+	public int getAutoShooter() {
 		return autoShooter;
 	}
 
-	public int getAutoDefenseReach()
-	{
+	public int getAutoDefenseReach() {
 		return autoDefenseReach;
 	}
 
-	public int getTowerAttackCapability()
-	{
+	public int getTowerAttackCapability() {
 		return towerAttackCapability;
 	}
 
-	public int getTeamNumber()
-	{
+	public int getTeamNumber() {
 		return teamNumber;
 	}
 
-	public double getSpeed1()
-	{
+	public double getSpeed1() {
 		return speed1;
 	}
 
-	public double getSpeed2()
-	{
+	public double getSpeed2() {
 		return speed2;
 	}
 
-	public String getRobotName()
-	{
+	public String getRobotName() {
 		return robotName;
 	}
 
-	public String getTeamName()
-	{
+	public String getTeamName() {
 		return teamName;
 	}
 
-	public String getNotes()
-	{
+	public String getNotes() {
 		return notes;
 	}
 
