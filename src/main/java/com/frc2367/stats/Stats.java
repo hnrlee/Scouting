@@ -22,8 +22,8 @@ public class Stats {
 	private XYSeriesCollection seriesCollection = new XYSeriesCollection();
 	private JFreeChart scatter;
 	private WebApiTesting api = new WebApiTesting(true);
-	private ArrayList<FullTeam> arr = api.updateData();
-	private XYSeries[] bigTest = new XYSeries[arr.size()];
+	private ArrayList<FullTeam> teamList = api.updateData();
+	private XYSeries[] bigTest = new XYSeries[teamList.size()];
 	private int xMax = 0, xMin = 0, yMax = 0, yMin = 0;
 	private String xAxisData = "test x";
 	private String yAxisData = "test y";
@@ -42,12 +42,12 @@ public class Stats {
 
 		int xVal, yVal = 0;
 		seriesCollection = new XYSeriesCollection();
-		bigTest = new XYSeries[arr.size()];
+		bigTest = new XYSeries[teamList.size()];
 		
 
-		for (int i = 0; i < arr.size(); i++) {
-			bigTest[i] = new XYSeries(arr.get(i).getTeamNumberAsString());
-			for (int j = 0; j < arr.get(i).getTeamScores().size(); j++) {
+		for (int i = 0; i < teamList.size(); i++) {
+			bigTest[i] = new XYSeries(teamList.get(i).getTeamNumberAsString());
+			for (int j = 0; j < teamList.get(i).getTeamScores().size(); j++) {
 
 				/*
 				 * autoboulderslow autobouldershigh teleopboulderslow
@@ -60,166 +60,166 @@ public class Stats {
 
 				switch (xSelection) {
 				case 0:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoBouldersLow();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoBouldersLow();
 					xAxisData = "Auto Low Goal Count";
 					break;
 				case 1:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoBouldersHigh();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoBouldersHigh();
 					xAxisData = "Auto High Goal Count";
 					break;
 				case 2:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopBouldersLow();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopBouldersLow();
 					xAxisData = "Teleop Low Goal Count";
 					break;
 				case 3:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopBouldersHigh();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopBouldersHigh();
 					xAxisData = "Teleop High Goal Count";
 					break;
 				case 4:
-					xVal = arr.get(i).getTeamScores().get(j).getTowerEndStrength();
+					xVal = teamList.get(i).getTeamScores().get(j).getTowerEndStrength();
 					xAxisData = "Tower End Strength";
 					break;
 				case 5:
-					xVal = arr.get(i).getTeamScores().get(j).getFoulCount();
+					xVal = teamList.get(i).getTeamScores().get(j).getFoulCount();
 					xAxisData = "Foul Count";
 					break;
 				case 6:
-					xVal = arr.get(i).getTeamScores().get(j).getTechFoulCount();
+					xVal = teamList.get(i).getTeamScores().get(j).getTechFoulCount();
 					xAxisData = "Tech Foul Count";
 					break;
 				case 7:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoPoints();
 					xAxisData = "Auto Points";
 					break;
 				case 8:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoReachPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoReachPoints();
 					xAxisData = "Auto Reach Points";
 					break;
 				case 9:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoCrossingPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoCrossingPoints();
 					xAxisData = "Auto Crossing Points";
 					break;
 				case 10:
-					xVal = arr.get(i).getTeamScores().get(j).getAutoBoulderPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getAutoBoulderPoints();
 					xAxisData = "Auto Goal Points";
 					break;
 				case 11:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopPoints();
 					xAxisData = "Teleop Points";
 					break;
 				case 12:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopCrossingPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopCrossingPoints();
 					xAxisData = "Teleop Crossing Points";
 					break;
 				case 13:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopBoulderPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopBoulderPoints();
 					xAxisData = "Teleop Goal Points";
 					break;
 				case 14:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopChallengePoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopChallengePoints();
 					xAxisData = "Teleop Challenge Points";
 					break;
 				case 15:
-					xVal = arr.get(i).getTeamScores().get(j).getTeleopScalePoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTeleopScalePoints();
 					xAxisData = "Teleop Scale Points";
 					break;
 				case 16:
-					xVal = arr.get(i).getTeamScores().get(j).getFoulPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getFoulPoints();
 					xAxisData = "Foul Points";
 					break;
 				case 17:
-					xVal = arr.get(i).getTeamScores().get(j).getTotalPoints();
+					xVal = teamList.get(i).getTeamScores().get(j).getTotalPoints();
 					xAxisData = "Total Points";
 					break;
 				case 18:
-					xVal = arr.get(i).getTeamNumber();
+					xVal = teamList.get(i).getTeamNumber();
 					xAxisData = "Team Number";
 					break;
 				default:
-					xVal = arr.get(i).getTeamNumber();
+					xVal = teamList.get(i).getTeamNumber();
 					xAxisData = "Team Number";
 					break;
 				}
 
 				switch (ySelection) {
 				case 0:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoBouldersLow();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoBouldersLow();
 					yAxisData = "Auto Low Goal Count";
 					break;
 				case 1:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoBouldersHigh();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoBouldersHigh();
 					yAxisData = "Auto High Goal Count";
 					break;
 				case 2:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopBouldersLow();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopBouldersLow();
 					yAxisData = "Teleop Low Goal Count";
 					break;
 				case 3:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopBouldersHigh();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopBouldersHigh();
 					yAxisData = "Teleop High Goal Count";
 					break;
 				case 4:
-					yVal = arr.get(i).getTeamScores().get(j).getTowerEndStrength();
+					yVal = teamList.get(i).getTeamScores().get(j).getTowerEndStrength();
 					yAxisData = "Tower End Strength";
 					break;
 				case 5:
-					yVal = arr.get(i).getTeamScores().get(j).getFoulCount();
+					yVal = teamList.get(i).getTeamScores().get(j).getFoulCount();
 					yAxisData = "Foul Count";
 					break;
 				case 6:
-					yVal = arr.get(i).getTeamScores().get(j).getTechFoulCount();
+					yVal = teamList.get(i).getTeamScores().get(j).getTechFoulCount();
 					yAxisData = "Tech Foul Count";
 					break;
 				case 7:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoPoints();
 					yAxisData = "Auto Points";
 					break;
 				case 8:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoReachPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoReachPoints();
 					yAxisData = "Auto Reach Points";
 					break;
 				case 9:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoCrossingPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoCrossingPoints();
 					yAxisData = "Auto Crossing Points";
 					break;
 				case 10:
-					yVal = arr.get(i).getTeamScores().get(j).getAutoBoulderPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getAutoBoulderPoints();
 					yAxisData = "Auto Goal Points";
 					break;
 				case 11:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopPoints();
 					yAxisData = "Teleop Points";
 					break;
 				case 12:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopCrossingPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopCrossingPoints();
 					yAxisData = "Teleop Crossing Points";
 					break;
 				case 13:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopBoulderPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopBoulderPoints();
 					yAxisData = "Teleop Goal Points";
 					break;
 				case 14:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopChallengePoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopChallengePoints();
 					yAxisData = "Teleop Challenge Points";
 					break;
 				case 15:
-					yVal = arr.get(i).getTeamScores().get(j).getTeleopScalePoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTeleopScalePoints();
 					yAxisData = "Teleop Scale Points";
 					break;
 				case 16:
-					yVal = arr.get(i).getTeamScores().get(j).getFoulPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getFoulPoints();
 					yAxisData = "Foul Points";
 					break;
 				case 17:
-					yVal = arr.get(i).getTeamScores().get(j).getTotalPoints();
+					yVal = teamList.get(i).getTeamScores().get(j).getTotalPoints();
 					yAxisData = "Total Points";
 					break;
 				case 18:
-					yVal = arr.get(i).getTeamNumber();
+					yVal = teamList.get(i).getTeamNumber();
 					yAxisData = "Team Number";
 					break;
 				default:
-					yVal = arr.get(i).getTeamNumber();
+					yVal = teamList.get(i).getTeamNumber();
 					yAxisData = "Team Number";
 					break;
 				}
@@ -333,6 +333,75 @@ public class Stats {
 
 	public double stdDevPop() {
 		return -1;
+	}
+
+	public ArrayList<FullTeam> getTeamList()
+	{
+		return teamList;
+	}
+	
+	public boolean validateTeamNum(int teamNum)
+	{
+		boolean ret = false;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				ret = true;
+		return ret;
+	}
+	public double getAverageScore(int teamNum)
+	{
+		double ave=0;
+		FullTeam selectedTeam = null;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				selectedTeam = team;
+		for(int i = 0;i<selectedTeam.getTeamScores().size();i++)
+			ave+=selectedTeam.getTeamScores().get(i).getTotalPoints();
+		return ave / selectedTeam.getTeamScores().size();
+	}
+	public double getAverageAutoScore(int teamNum)
+	{
+		double ave=0;
+		FullTeam selectedTeam = null;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				selectedTeam = team;
+		for(int i = 0;i<selectedTeam.getTeamScores().size();i++)
+			ave+=selectedTeam.getTeamScores().get(i).getAutoPoints();
+		return ave / selectedTeam.getTeamScores().size();
+	}
+	public double getAverageTeleopScore(int teamNum)
+	{
+		double ave=0;
+		FullTeam selectedTeam = null;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				selectedTeam = team;
+		for(int i = 0;i<selectedTeam.getTeamScores().size();i++)
+			ave+=selectedTeam.getTeamScores().get(i).getTeleopPoints();
+		return ave / selectedTeam.getTeamScores().size();
+	}
+	public double getBreachPercent(int teamNum)
+	{
+		int count=0;
+		FullTeam selectedTeam = null;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				selectedTeam = team;
+		for(int i = 0;i<selectedTeam.getTeamScores().size();i++)
+			count += selectedTeam.getTeamScores().get(i).isTeleopDefensesBreached() ? 1:0;
+		return (double) count / (double)selectedTeam.getTeamScores().size() *100;
+	}
+	public double getCapturePercent(int teamNum)
+	{
+		int count=0;
+		FullTeam selectedTeam = null;
+		for(FullTeam team:teamList)
+			if(team.getTeamNumber()==teamNum)
+				selectedTeam = team;
+		for(int i = 0;i<selectedTeam.getTeamScores().size();i++)
+			count += selectedTeam.getTeamScores().get(i).isTeleopTowerCaptured()? 1:0;
+		return (double) count / (double)selectedTeam.getTeamScores().size() *100 ;
 	}
 
 }

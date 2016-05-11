@@ -67,17 +67,13 @@ public class GUI
 	private JTabbedPane tabs = new JTabbedPane();
 	private JPanel pitData = new JPanel(new BorderLayout());
 	private JPanel pitDataInfo = new JPanel(new GridLayout(2, 2));
-	private JPanel teamMatchData = new JPanel(new GridLayout(3, 3));
-	private JPanel fullMatchData = new JPanel(new GridLayout(3, 3));
-	private JPanel basicStatPanel = new JPanel(new GridLayout(3, 3));
+	private JPanel basicStatPanel = new JPanel(new GridLayout(8, 2));
 	private ImageIcon pitDataIcon = new ImageIcon("Icons/FIRST Logo.gif");
-	private ImageIcon teamMatchDataIcon = new ImageIcon("Icons/Boulder.png");
-	private ImageIcon fullMatchDataIcon = new ImageIcon("Icons/portcullis.png");
 	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
 	private ImageIcon overallTrendsPanelIcon = new ImageIcon("Icons/graph.png");
 	private boolean isFullscreen = false;
 	final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-	final JFrame mainFrame = new JFrame("The Dankest Scouting App");
+	final JFrame mainFrame = new JFrame("Robot Scoutr");
 	private JButton submitButton = new JButton("Submit");
 
 	private Timer t;
@@ -128,11 +124,6 @@ public class GUI
 			{
 				if (ctrl)
 					tabs.setSelectedIndex(2);
-			}
-			if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4)
-			{
-				if (ctrl)
-					tabs.setSelectedIndex(3);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_F)
 			{
@@ -242,14 +233,10 @@ public class GUI
 		// Tab setup
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
-		tabs.addTab("Team Match Data", teamMatchDataIcon, teamMatchData, "Enter individual team match data here.");
-		tabs.setMnemonicAt(1, KeyEvent.VK_2);
-		tabs.addTab("Full Match Data", fullMatchDataIcon, fullMatchData, "Enter full match data here.");
-		tabs.setMnemonicAt(2, KeyEvent.VK_3);
 		tabs.addTab("Individual Team Statistics", basicStatPanelIcon, basicStatPanel, "See data about an individual team here.");
-		tabs.setMnemonicAt(3, KeyEvent.VK_4);
+		tabs.setMnemonicAt(1, KeyEvent.VK_2);
 		tabs.addTab("Overall Trends", overallTrendsPanelIcon, overallTrends, "See the overall trends here");
-		tabs.setMnemonicAt(3, KeyEvent.VK_5);
+		tabs.setMnemonicAt(2, KeyEvent.VK_3);
 
 		setupPitData();
 
@@ -476,17 +463,6 @@ public class GUI
 
 	}
 
-	JPanel testScatter;
-
-	public void setTestScatter(JPanel j)
-	{
-		testScatter = j;
-	}
-
-	public void setupBasicStatPanel()
-	{
-		basicStatPanel.add(testScatter);
-	}
 
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	public boolean[] getAutoDefenses()
