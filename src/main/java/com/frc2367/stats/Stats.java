@@ -1,6 +1,7 @@
 package com.frc2367.stats;
 
 import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -26,8 +27,8 @@ public class Stats {
 	private int xMax = 0, xMin = 0, yMax = 0, yMin = 0;
 	private String xAxisData = "test x";
 	private String yAxisData = "test y";
-	private int xSelection = 0;
-	private int ySelection = 0;
+//	private int xSelection = 0;
+//	private int ySelection = 0;
 
 	public Stats() {
 
@@ -37,7 +38,7 @@ public class Stats {
 		return scatter;
 	}
 
-	public void createSeries() {
+	public void createSeries(int xSelection,int ySelection) {
 
 		int xVal, yVal = 0;
 
@@ -253,14 +254,14 @@ public class Stats {
 		// seriesCollection.addSeries(series);
 	}
 
-	public JPanel displayChart() {
+	public JPanel displayChart(int xSelection,int ySelection) {
 
 		int xTickUnit = 0, yTickUnit = 0;
 
 		JPanel panelForReturn = new JPanel();
 
 		// chart setup
-		createSeries();
+		createSeries(xSelection,ySelection);
 		scatter = ChartFactory.createScatterPlot(xAxisData + " vs " + yAxisData, xAxisData, yAxisData, seriesCollection,
 				PlotOrientation.VERTICAL, false, true, false);
 		XYLineAndShapeRenderer render = new XYLineAndShapeRenderer();
