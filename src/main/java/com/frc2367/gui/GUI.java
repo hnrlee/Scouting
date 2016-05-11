@@ -83,19 +83,11 @@ public class GUI
 
 	// stats graphs
 	private Stats stats;
-	private JComboBox<String> xAxisBox = new JComboBox<String>(new String[] 
-															  { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", 
-																"foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points",
-																"teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points",
-																"foul points", "total points", "team number" });
-	private JComboBox<String> yAxisBox = new JComboBox<String>(new String[] 
-			  { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", 
-				"foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points",
-				"teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points",
-				"foul points", "total points", "team number" });
+	private JComboBox<String> xAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points", "foul points", "total points", "rookie year", "team number" });
+	private JComboBox<String> yAxisBox = new JComboBox<String>(new String[] { "auto boulders low", "auto boulders high", "teleop boulders low", "teleop boulders high", "tower end strength", "foul count", "tech foul count", "auto points", "auto reach points", "auto crossing points", "auto boulder points", "teleop points", "teleop crossing points", "teleop boulder points", "teleop challenge points", "teleop scale points", "foul points", "total points", "rookie year", "team number" });
 
 	private JPanel overallTrends = new JPanel(new BorderLayout());
-	
+
 	class GeneralListener implements KeyListener, ActionListener
 	{
 
@@ -247,7 +239,7 @@ public class GUI
 
 		// frame setup
 		mainFrame.add(tabs);
-		mainFrame.setSize(1000, 500);
+		mainFrame.setSize(1000, 600);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
 		tabs.addKeyListener(new GeneralListener());
@@ -278,15 +270,12 @@ public class GUI
 		speed2Field.addActionListener(gl);
 		teamNameField.addActionListener(gl);
 
-		
 		setupScoutedTeamData();
 		t.start();
 		stats = new Stats();
 		setupTeamStats();
 
-
 		setupTrends();
-
 
 	}
 
@@ -447,13 +436,13 @@ public class GUI
 
 	public void setupTrends()
 	{
-		JPanel topComboBoxes = new JPanel(new GridLayout(2,2));
-		overallTrends.add(topComboBoxes,BorderLayout.NORTH);
-		topComboBoxes.add(new JLabel("x-axis",SwingConstants.CENTER));
-		topComboBoxes.add(new JLabel("y-axis",SwingConstants.CENTER));
+		JPanel topComboBoxes = new JPanel(new GridLayout(2, 2));
+		overallTrends.add(topComboBoxes, BorderLayout.NORTH);
+		topComboBoxes.add(new JLabel("x-axis", SwingConstants.CENTER));
+		topComboBoxes.add(new JLabel("y-axis", SwingConstants.CENTER));
 		topComboBoxes.add(xAxisBox);
 		topComboBoxes.add(yAxisBox);
-		overallTrends.add(stats.displayChart(18, 2));
+		overallTrends.add(stats.displayChart(18, 17));
 		class TeamListener implements ActionListener
 		{
 
@@ -462,31 +451,30 @@ public class GUI
 			{
 				overallTrends.add(stats.displayChart(xAxisBox.getSelectedIndex(), yAxisBox.getSelectedIndex()));
 			}
-			
+
 		}
 		TeamListener tl = new TeamListener();
 		xAxisBox.addActionListener(tl);
 		yAxisBox.addActionListener(tl);
 	}
-	
+
 	public void setupTeamStats()
 	{
-		
+
 		JLabel teamNumLabel = new JLabel("team number");
 		JLabel aveScoreLabel = new JLabel("average score");
 		JLabel aveAutoScoreLabel = new JLabel("average auto score");
 		JLabel aveTeleopScoreLabel = new JLabel("average teleop score");
 		JLabel breachPercentLabel = new JLabel("Breach %");
 		JLabel capPercentLabel = new JLabel("Capture %");
-		
-		
+
 		final JTextField teamSelection = new JTextField(0);
 		final JLabel aveScore = new JLabel("0");
 		final JLabel aveAutoScore = new JLabel("0");
 		final JLabel aveTeleop = new JLabel("0");
-		final JLabel breach= new JLabel("0");
+		final JLabel breach = new JLabel("0");
 		final JLabel cap = new JLabel("0");
-		
+
 		basicStatPanel.add(teamNumLabel);
 		basicStatPanel.add(teamSelection);
 		basicStatPanel.add(aveScoreLabel);
@@ -499,7 +487,7 @@ public class GUI
 		basicStatPanel.add(breach);
 		basicStatPanel.add(capPercentLabel);
 		basicStatPanel.add(cap);
-		
+
 		class StatListener implements ActionListener
 		{
 
@@ -508,7 +496,7 @@ public class GUI
 			{
 				String teamNumStr = teamSelection.getText();
 				int teamNum = Integer.parseInt(teamNumStr);
-				if(stats.validateTeamNum(teamNum))
+				if (stats.validateTeamNum(teamNum))
 				{
 					aveScore.setText(String.valueOf(stats.getAverageScore(teamNum)));
 					aveAutoScore.setText(String.valueOf(stats.getAverageAutoScore(teamNum)));
@@ -517,22 +505,22 @@ public class GUI
 					cap.setText(String.valueOf(stats.getCapturePercent(teamNum)));
 				}
 			}
-			
+
 		}
-		
+
 		StatListener sl = new StatListener();
 		teamSelection.addActionListener(sl);
-		
+
 	}
 
 	public void setupScoutedTeamData()
 	{
 		JLabel teamNumLabel = new JLabel("team number");
 		final JTextField teamSelection = new JTextField(0);
-		
+
 		scoutedTeamDataPanel.add(teamNumLabel);
 		scoutedTeamDataPanel.add(teamSelection);
-		
+
 		class DataListener implements ActionListener
 		{
 
@@ -542,11 +530,11 @@ public class GUI
 				String teamNumStr = teamSelection.getText();
 				int teamNum = Integer.parseInt(teamNumStr);
 			}
-			
+
 		}
 		DataListener dl = new DataListener();
 		teamSelection.addActionListener(dl);
-		
+
 	}
 
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar

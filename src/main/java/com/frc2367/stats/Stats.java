@@ -132,6 +132,10 @@ public class Stats {
 					xAxisData = "Total Points";
 					break;
 				case 18:
+					xVal = teamList.get(i).getRookieYear();
+					xAxisData = "Rookie Year";
+					break;
+				case 19:
 					xVal = teamList.get(i).getTeamNumber();
 					xAxisData = "Team Number";
 					break;
@@ -215,6 +219,10 @@ public class Stats {
 					yAxisData = "Total Points";
 					break;
 				case 18:
+					yVal = teamList.get(i).getRookieYear();
+					yAxisData = "Rookie Year";
+					break;
+				case 19:
 					yVal = teamList.get(i).getTeamNumber();
 					yAxisData = "Team Number";
 					break;
