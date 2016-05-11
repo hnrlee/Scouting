@@ -41,6 +41,9 @@ public class Stats {
 	public void createSeries(int xSelection,int ySelection) {
 
 		int xVal, yVal = 0;
+		seriesCollection = new XYSeriesCollection();
+		bigTest = new XYSeries[arr.size()];
+		
 
 		for (int i = 0; i < arr.size(); i++) {
 			bigTest[i] = new XYSeries(arr.get(i).getTeamNumberAsString());
