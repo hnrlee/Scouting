@@ -67,9 +67,11 @@ public class GUI
 	private JTabbedPane tabs = new JTabbedPane();
 	private JPanel pitData = new JPanel(new BorderLayout());
 	private JPanel pitDataInfo = new JPanel(new GridLayout(2, 2));
+	private JPanel basicTeamDataPanel = new JPanel(new GridLayout(2, 2));
 	private JPanel basicStatPanel = new JPanel(new GridLayout(8, 2));
 	private ImageIcon pitDataIcon = new ImageIcon("Icons/FIRST Logo.gif");
 	private ImageIcon basicStatPanelIcon = new ImageIcon("Icons/stronghold.png");
+	private ImageIcon basicTeamDataIcon = new ImageIcon("Icons/Boulder.png");
 	private ImageIcon overallTrendsPanelIcon = new ImageIcon("Icons/graph.png");
 	private boolean isFullscreen = false;
 	final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
@@ -233,10 +235,12 @@ public class GUI
 		// Tab setup
 		tabs.addTab("Pit Data", pitDataIcon, pitData, "Enter pit data here.");
 		tabs.setMnemonicAt(0, KeyEvent.VK_1);
-		tabs.addTab("Individual Team Statistics", basicStatPanelIcon, basicStatPanel, "See data about an individual team here.");
+		tabs.addTab("Individual Team Data", basicTeamDataIcon, basicTeamDataPanel, "See data about an individual team here.");
 		tabs.setMnemonicAt(1, KeyEvent.VK_2);
-		tabs.addTab("Overall Trends", overallTrendsPanelIcon, overallTrends, "See the overall trends here");
+		tabs.addTab("Individual Team Statistics", basicStatPanelIcon, basicStatPanel, "See stats about an individual team here.");
 		tabs.setMnemonicAt(2, KeyEvent.VK_3);
+		tabs.addTab("Overall Trends", overallTrendsPanelIcon, overallTrends, "See the overall trends here");
+		tabs.setMnemonicAt(3, KeyEvent.VK_4);
 
 		setupPitData();
 
@@ -273,9 +277,11 @@ public class GUI
 		speed2Field.addActionListener(gl);
 		teamNameField.addActionListener(gl);
 
+		
+		setupTeamData();
 		t.start();
 		stats = new Stats();
-		setupTeamInfo();
+		setupTeamStats();
 
 
 		setupTrends();
@@ -462,7 +468,7 @@ public class GUI
 		yAxisBox.addActionListener(tl);
 	}
 	
-	public void setupTeamInfo()
+	public void setupTeamStats()
 	{
 		
 		JLabel teamNumLabel = new JLabel("team number");
@@ -518,6 +524,33 @@ public class GUI
 		
 	}
 
+	public void setupTeamData()
+	{
+		JLabel teamNumLabel = new JLabel("team number");
+		final JTextField teamSelection = new JTextField(0);
+		
+		basicTeamDataPanel.add(teamNumLabel);
+		basicTeamDataPanel.add(teamSelection);
+		
+		class DataListener implements ActionListener
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String teamNumStr = teamSelection.getText();
+				int teamNum = Integer.parseInt(teamNumStr);
+				if(stats.validateTeamNum(teamNum))
+				{
+					
+				}
+			}
+			
+		}
+		DataListener dl = new DataListener();
+		teamSelection.addActionListener(dl);
+		
+	}
 
 	// list goes port, cdf, moat, ramp, draw, sally, wall, terr, lowbar
 	public boolean[] getAutoDefenses()
