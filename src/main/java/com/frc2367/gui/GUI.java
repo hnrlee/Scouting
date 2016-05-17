@@ -487,6 +487,8 @@ public class GUI {
 	}
 
 	public void setupScoutedTeamData() {
+		PitTeam pt;
+
 		JLabel teamNumLabel = new JLabel("team number");
 		final JTextField teamSelection = new JTextField(0);
 
@@ -495,20 +497,7 @@ public class GUI {
 		teamNum.add(teamSelection);
 
 		scoutedTeamDataPanel.add(teamNum);
-
-		class DataListener implements ActionListener {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String teamNumStr = teamSelection.getText();
-				int teamNum = Integer.parseInt(teamNumStr);
-			}
-
-		}
-		DataListener dl = new DataListener();
-		teamSelection.addActionListener(dl);
-
-		JLabel robotName, speed1, speed2, note, teleHigh, teleLow, teamName;
+		final JLabel robotName, speed1, speed2, note, teleHigh, teleLow, teamName;
 
 		robotName = new JLabel("Robot Name: ");
 		speed1 = new JLabel("Speed 1: ");
@@ -517,6 +506,32 @@ public class GUI {
 		teleHigh = new JLabel("Can Teleop High?: ");
 		teleLow = new JLabel("Can Teleop Low? ");
 		teamName = new JLabel("Team Name: ");
+
+		class DataListener implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String teamNumStr = teamSelection.getText();
+				int teamNum = Integer.parseInt(teamNumStr);
+
+				boolean hasTeam = false;
+				for (int i = 0; i < pitTeams.size(); i++) {
+					if (pitTeams.get(i).getTeamNumber() == teamNum) {
+						robotName.setText("Robot Name: " + pitTeams.get(i).getRobotName());
+						speed1.setText("Speed 1: " + pitTeams.get(i).getSpeed1());
+						speed2.setText("Speed 2 (if applicable): " + pitTeams.get(i).getSpeed2());
+						note.setText("Note: " + pitTeams.get(i).getNotes());
+						teleHigh.setText("Can Teleop High?: " + pitTeams.get(i).getTeleHigh());
+						teleLow.setText("Can Teleop Low? " + pitTeams.get(i).getTeleLow());
+						teamName.setText("Team Name: " + pitTeams.get(i).getTeamName());
+					}
+				}
+
+			}
+
+		}
+		DataListener dl = new DataListener();
+		teamSelection.addActionListener(dl);
 
 		scoutedTeamDataPanel.add(robotName);
 		scoutedTeamDataPanel.add(teamName);
