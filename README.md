@@ -1,0 +1,3 @@
+# Scouting
+
+A scouting thing
