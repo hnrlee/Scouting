@@ -16,3 +16,5 @@ This program downloads data from the FIRST and The Blue Alliance servers via the
 
 ## How it works
 GSON, JSON, JFreeChart
+GSON is used to get data from the FIRST and TBA servers
+JFreeChart is used to provide graphs of the data.
