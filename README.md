@@ -15,3 +15,4 @@ In general, useful information about a team such as their drive characteristics,
 This program downloads data from the FIRST and The Blue Alliance servers via their respective APIs. Each match from every previous competition is downloaded and information from each match is picked apart and assigned to each team. By doing this, we essentially find complete statistics for each team throughout the current season. This information is then statistically analyzed and graphed so as to provide useful information to whoever is coming up with a strategy.
 
 ## How it works
+GSON, JSON, JFreeChart
